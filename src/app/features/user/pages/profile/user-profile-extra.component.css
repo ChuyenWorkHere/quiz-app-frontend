@@ -1,0 +1,13 @@
+.profile-state { min-height: 420px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; text-align: center; }
+.profile-state p { margin: 0; color: #526071; }
+.profile-state h2 { margin: 4px 0 0; }
+.profile-state button { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border: 0; border-radius: 9px; background: #004ac6; color: #fff; font-weight: 700; cursor: pointer; }
+.error-state > svg { color: #ba1a1a; }
+.spinner { width: 38px; height: 38px; border: 4px solid #dbe1ff; border-top-color: #004ac6; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.profile-error { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-radius: 10px; background: #ffdad6; color: #93000a; font-size: 13px; font-weight: 650; }
+.avatar-placeholder { width: 128px; height: 128px; display: grid; place-items: center; border: 4px solid #eff4ff; border-radius: 18px; background: #dbe1ff; color: #004ac6; box-sizing: border-box; font-size: 34px; font-weight: 800; }
+.avatar-error { color: #ba1a1a !important; }
+.remove-photo { justify-self: start; padding: 7px 10px; border: 0; border-radius: 8px; background: #fff0ef; color: #93000a; font-weight: 700; cursor: pointer; }
+.form-grid input:disabled { color: #737686; cursor: not-allowed; opacity: .8; }
+.readonly-note { color: #737686; font-size: 11px; font-weight: 500; }

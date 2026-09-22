@@ -1,0 +1,43 @@
+:host { display: block; width: 100%; }
+.login-card { padding: 32px; border-radius: 16px; background: #fff; box-shadow: 0 20px 25px -5px rgb(15 23 42 / .10), 0 8px 10px -6px rgb(15 23 42 / .10); }
+.card-heading { text-align: center; margin-bottom: 24px; }
+.logo-tile { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 12px; padding: 8px; border-radius: 16px; background: #eff4ff; box-shadow: inset 0 2px 4px rgb(0 0 0 / .05); }
+.logo-tile svg { width: 48px; height: 48px; }
+.brand, h1 { font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+.brand { color: #004ac6; font-size: 20px; font-weight: 600; }
+h1 { margin: 8px 0 6px; font-size: 32px; font-weight: 700; line-height: 40px; letter-spacing: -.02em; }
+.card-heading p { color: #434655; font-size: 16px; line-height: 24px; }
+form { display: flex; flex-direction: column; gap: 16px; }
+.field-group > label { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
+em { color: #ba1a1a; font-style: normal; }
+small { font-size: 12px; font-weight: 400; color: #434655; white-space: nowrap; }
+.input-wrap { position: relative; }
+.input-wrap > svg { position: absolute; left: 14px; top: 12px; width: 20px; height: 20px; color: #434655; pointer-events: none; }
+svg { flex-shrink: 0; }
+.input-wrap input { width: 100%; min-height: 44px; border: 0; border-radius: 12px; padding: 10px 16px 10px 44px; background: #eff4ff; font-size: 16px; line-height: 24px; color: #0b1c30; outline: none; transition: background .15s, box-shadow .15s; }
+.input-wrap input::placeholder { color: #737686; }
+.input-wrap .password-input { padding-right: 44px; }
+.input-wrap input:focus { background: white; box-shadow: 0 0 0 2px #2563eb; }
+.input-wrap input.invalid { background: #fff0ee; box-shadow: 0 0 0 2px #ba1a1a; }
+.visibility-toggle { position: absolute; right: 8px; top: 6px; padding: 6px; border-radius: 8px; color: #434655; }
+.visibility-toggle svg { width: 20px; height: 20px; }
+.visibility-toggle:hover { background: #e5eeff; }
+button, a, input[type=checkbox] { cursor: pointer; }
+.text-link, a { color: #004ac6; font-weight: 700; }
+.text-link { font-size: 12px; }
+.text-link:hover, a:hover { text-decoration: underline; }
+.remember-row { display: flex; padding-top: 4px; }
+.remember-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #434655; cursor: pointer; }
+.remember-label input { width: 16px; height: 16px; accent-color: #004ac6; }
+.submit-button { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px; min-height: 48px; border-radius: 12px; background: #004ac6; color: white; font-size: 14px; font-weight: 600; box-shadow: 0 4px 6px rgb(0 74 198 / .18); transition: background .15s; }
+.submit-button svg { width: 20px; height: 20px; }
+.submit-button:hover { background: #2563eb; }
+.submit-button:disabled { opacity: .6; cursor: wait; }
+.register-prompt { margin-top: 24px; padding: 20px 12px 12px; border-radius: 12px; background: #f5f8ff; text-align: center; font-size: 14px; line-height: 22px; color: #434655; }
+.register-prompt a { margin-left: 4px; }
+.field-error { margin-top: 6px; color: #ba1a1a; font-size: 12px; }
+.error-banner, .status-message { padding: 12px; border-radius: 12px; font-size: 14px; line-height: 20px; }
+.error-banner { margin-bottom: 20px; background: #ffdad6; color: #93000a; }
+.status-message { background: #eff4ff; color: #004ac6; }
+:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+@media (max-width: 480px) { .login-card { padding: 24px; } h1 { font-size: 28px; } small { font-size: 10px; } .field-group > label { font-size: 12px; } .input-wrap input { font-size: 14px; } }

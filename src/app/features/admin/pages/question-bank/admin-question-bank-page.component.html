@@ -1,0 +1,95 @@
+<main>
+    <header class="page-head">
+        <div>
+            <nav><span>Admin Portal</span><svg lucideChevronRight [size]="14"></svg><strong>Question Bank</strong></nav>
+            <h1>Question Bank</h1>
+            <p>Manage and review questions across every quiz in the platform.</p>
+        </div>
+        <div><button class="primary" type="button" routerLink="/admin/questions/new"><svg lucidePlus [size]="20"></svg>Create Question</button></div>
+    </header>
+
+    <section class="data-card">
+        <header class="filters">
+            <div><label class="search"><svg lucideSearch [size]="19"></svg><input [ngModel]="search()" (ngModelChange)="changeSearch($event)" placeholder="Search by question, quiz, or ID...">@if(search()){<button type="button" (click)="clearSearch()"><svg lucideX [size]="16"></svg></button>}</label>
+                <select [ngModel]="type()" (ngModelChange)="changeType($event)">
+                    <option value="all">All Types</option><option value="0">Single Choice</option><option value="1">Multiple Select</option><option value="2">True / False</option>
+                </select>
+                <select [ngModel]="assignmentStatus()" (ngModelChange)="changeAssignmentStatus($event)" aria-label="Filter by assignment status">
+                    <option value="all">All Questions</option><option value="1">Assigned</option><option value="2">Unassigned</option>
+                </select>
+            </div>
+            <div class="type-tabs">@for(item of [{v:'all',l:'All Types'},{v:'0',l:'Single Choice'},{v:'1',l:'Multiple Select'},{v:'2',l:'True / False'}];track item.v){<button type="button" [class.active]="type()===item.v" (click)="changeType(item.v)">{{item.l}}</button>}</div>
+        </header>
+
+        @if(loading()){
+        <div class="empty" role="status"><span><svg class="loading-spin" lucideRefreshCw [size]="42"></svg></span>
+            <h2>Loading questions...</h2>
+        </div>
+        } @else if(loadError()){
+        <div class="empty" role="alert"><span><svg lucideAlertTriangle [size]="40"></svg></span>
+            <h2>Unable to load questions</h2>
+            <p>The question bank could not be loaded.</p><button class="primary" type="button" (click)="loadQuestions()"><svg lucideRefreshCw [size]="18"></svg>Try Again</button></div>
+        } @else if(filtered().length){
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" aria-label="Select all questions" [checked]="allSelected()" (change)="toggleAll()"></th>
+                        <th>Question &amp; Quiz</th>
+                        <th>Type</th>
+                        <th>Level</th>
+                        <th>Correct Answer</th>
+                        <th>Quiz</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>@for(question of filtered();track question.id){
+                    <tr>
+                        <td><input type="checkbox" [attr.aria-label]="'Select question ' + question.id" [checked]="selected().has(question.id)" (change)="toggle(question.id)"></td>
+                        <td>
+                            <div class="question-copy"><span><b>Q-{{question.id}}</b><em>{{levelLabel(question.level)}}</em><small>#QUIZ-{{question.quizId}}</small></span>
+                                <p [routerLink]="['/admin/questions',question.id]">{{question.content}}</p>
+                            </div>
+                        </td>
+                        <td><span class="type-pill">{{questionTypeLabel(question.questionType)}}</span></td>
+                        <td>{{levelLabel(question.level)}}</td>
+                        <td><span class="answer"><svg lucideCheckCircle2 [size]="15"></svg>{{correctAnswer(question)}}</span></td>
+                        <td><span class="quiz-link">{{question.quizTitle}}</span></td>
+                        <td>
+                            <div class="actions"><button type="button" title="View details" [routerLink]="['/admin/questions',question.id]"><svg lucideEye [size]="18"></svg></button><button type="button" title="Edit" [routerLink]="['/admin/questions',question.id,'edit']"><svg lucidePencil [size]="18"></svg></button>
+                                <button
+                                    type="button" title="Delete" (click)="openDelete(question)"><svg lucideTrash2 [size]="18"></svg></button>
+                            </div>
+                        </td>
+                    </tr>}
+                </tbody>
+            </table>
+        </div>
+        <footer class="pagination"><span>Showing <strong>{{(page()-1)*pageSize()+1}} to {{(page()-1)*pageSize()+questions().length}}</strong> of <strong>{{totalItems()}}</strong> questions</span>
+            <nav><button type="button" [disabled]="page()<=1" (click)="changePage(page()-1)"><svg lucideChevronLeft [size]="18"></svg></button><button class="active" type="button">{{page()}}</button><span>of {{totalPages()}}</span><button type="button" [disabled]="page()>=totalPages()"
+                    (click)="changePage(page()+1)"><svg lucideChevronRight [size]="18"></svg></button></nav>
+        </footer>
+        } @else {
+        <div class="empty"><span><svg lucideFolderOpen [size]="42"></svg></span>
+            <h2>No questions found</h2>
+            <p>Adjust the current search filters or create a new question.</p><button class="primary" type="button" (click)="clearSearch()">Clear Search</button></div>
+        }
+    </section>
+
+    @if(deleteTarget(); as question){
+    <div class="overlay" (click)="closeDelete()">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-question-title" (click)="$event.stopPropagation()">
+            <div>
+                <span class="warning"><svg lucideAlertTriangle [size]="22"></svg></span>
+                <div>
+                    <h2 id="delete-question-title">Delete Question</h2>
+                    <p>Are you sure you want to delete Q-{{question.id}}?</p>
+                </div>
+            </div>
+            <aside>This action removes the question and its answer choices. Questions that already have student answers cannot be deleted.</aside>
+            @if(deleteError()){
+            <aside class="delete-error" role="alert">{{deleteError()}}</aside>}
+            <footer><button type="button" [disabled]="deleting()" (click)="closeDelete()">Cancel</button><button class="danger" type="button" [disabled]="deleting()" (click)="confirmDelete()">{{deleting() ? 'Deleting...' : 'Delete Question'}}</button></footer>
+        </section>
+    </div>}
+</main>

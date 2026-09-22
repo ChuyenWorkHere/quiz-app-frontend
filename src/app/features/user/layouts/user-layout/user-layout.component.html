@@ -1,0 +1,5 @@
+<app-user-sidebar [open]="sidebarOpen()" (closeMenu)="sidebarOpen.set(false)" />
+<div class="user-shell">
+  <app-user-header (openNavigation)="sidebarOpen.set(true)" />
+  <router-outlet />
+</div>

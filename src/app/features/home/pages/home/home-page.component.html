@@ -1,0 +1,72 @@
+<app-header />
+<main>
+  <section class="hero section-wrap">
+    <div class="hero-copy">
+      <span class="pill"><svg lucideZap [size]="16" aria-hidden="true"></svg>Active Recall &amp; Spaced Repetition
+        Engine</span>
+      <h1>Test Your Knowledge.<br><span>Master Any Subject.</span></h1>
+      <p class="hero-description">Challenge yourself with interactive, timed assessments designed by educators. Track
+        your progress, earn certificates, and sharpen your skills at your own pace.</p>
+      <form class="search-row" (submit)="$event.preventDefault(); catalog.scrollIntoView({ behavior: 'smooth' })"
+        role="search">
+        <div class="search-input"><svg lucideSearch [size]="20" aria-hidden="true"></svg><input type="search"
+            aria-label="Search quizzes" placeholder="Search topics like Python, World History..." [value]="search()"
+            (input)="search.set($any($event.target).value)" /></div>
+        <button class="primary-button" type="submit">Explore Quizzes<svg lucideArrowRight [size]="18"
+            aria-hidden="true"></svg></button>
+      </form>
+      <div class="stats" aria-label="Sample platform statistics">
+        <div><strong>250+</strong><span>Active Quizzes</span></div>
+        <div><strong>98,000+</strong><span>Completed Tests</span></div>
+        <div><strong>1,000+</strong><span>Learner</span>
+        </div>
+      </div>
+    </div>
+    <app-assessment-preview />
+  </section>
+  <section class="catalog section-wrap" id="quizzes-catalog" #catalog aria-labelledby="catalog-title">
+    <div class="section-heading mb-3">
+      <div><span class="pill catalog-pill"><svg lucideGraduationCap [size]="16" aria-hidden="true"></svg>Curated
+          Catalog</span>
+        <h2 id="catalog-title">Available Quizzes</h2>
+        <p>Choose a quiz to test your proficiency across diverse disciplines.</p>
+      </div>
+      @if (!loading() && !loadError()) {
+      <span class="result-count" aria-live="polite">{{ filteredQuizzes().length }} {{ filteredQuizzes().length ===
+        1 ? 'quiz' : 'quizzes' }} available</span>
+      }
+    </div>
+    @if (loading()) {
+    <div class="empty-state" role="status">Loading quizzes...</div>
+    } @else if (loadError()) {
+    <div class="empty-state" role="alert">
+      <h3>Unable to load quizzes</h3>
+      <p>Please try again in a moment.</p>
+      <button class="primary-button" type="button" (click)="loadQuizzes()">Try Again</button>
+    </div>
+    } @else {
+    <div class="quiz-grid">
+      @for (quiz of filteredQuizzes(); track quiz.id) {
+      <app-quiz-card [quiz]="quiz" mode="preview" (viewQuiz)="quizDetail.open($any($event))" />
+      }
+    </div>
+    @if (!filteredQuizzes().length) {
+    <div class="empty-state">
+      <span class="empty-icon">
+        <svg lucideSearchX [size]="40" aria-hidden="true"></svg>
+      </span>
+      <h3>No Quizzes Currently Available</h3>
+      <p>We couldn't find any active quizzes matching your current filters. Try another search or explore another
+        subject category.</p>
+      <button class="primary-button" type="button" (click)="resetFilters()">
+        <svg lucideRotateCcw [size]="18" aria-hidden="true">
+        </svg>
+        Reset Filters
+      </button>
+    </div> }
+    }
+  </section>
+  <app-how-it-works />
+</main>
+<app-footer />
+<app-quiz-detail #quizDetail />

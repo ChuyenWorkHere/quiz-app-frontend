@@ -1,0 +1,78 @@
+<main class="question-detail">
+    @if (loading()) {
+    <section class="state" role="status"><svg class="loading-spin" lucideRefreshCw></svg>
+        <h2>Loading question details...</h2>
+    </section>
+    } @else if (errorMessage()) {
+    <section class="state error" role="alert"><svg lucideCircleAlert></svg>
+        <h2>Unable to display question</h2>
+        <p>{{errorMessage()}}</p><button type="button" (click)="loadQuestion()">Try Again</button><a routerLink="/admin/questions">Back to Question Bank</a></section>
+    } @else if (question(); as question) {
+    <nav class="breadcrumb"><a routerLink="/admin/dashboard">Admin Portal</a><svg lucideChevronRight></svg><a routerLink="/admin/questions">Question Bank</a><svg lucideChevronRight></svg><strong>Q-{{question.id}}</strong></nav>
+    <header class="page-head">
+        <div>
+            <h1>Question Details</h1><span class="id">ID: Q-{{question.id}}</span><span class="status"><i></i>{{question.quizId ? 'Assigned' : 'Unassigned'}}</span></div>
+        <aside><a routerLink="/admin/questions"><svg lucideArrowLeft></svg>Back to Question Bank</a><button class="danger" type="button" (click)="openDelete()"><svg lucideTrash2></svg>Delete Question</button>
+            <a class="primary" [routerLink]="['/admin/questions',question.id,'edit']"><svg lucideEdit3></svg>Edit Question</a>
+        </aside>
+    </header>
+
+    <section class="stem-card">
+        <header><span><svg lucideCheckCircle2></svg>{{questionType(question.questionType)}}</span>
+            <p>Difficulty: <b>{{difficulty(question.level)}}</b></p>
+        </header>
+        <small>QUESTION STEM</small>
+        <h2>{{question.content}}</h2>
+        @if (question.image) {
+        <div class="question-media"><img [src]="question.image" [alt]="question.content"></div>} @else {
+        <div class="no-image"><svg lucideImage></svg><span>No image configured for this question</span></div>}
+    </section>
+
+    <section class="answers">
+        <header>
+            <div>
+                <h2>Answer Options</h2><span>{{question.answers.length}} Options</span></div><small>{{question.answers.length ? 'Answer key configured' : 'No options configured'}}</small></header>
+        @for (answer of question.answers; track answer.id; let index = $index) {
+        <article [class.correct]="answer.isCorrect"><b>{{optionLabel(index)}}</b>
+            <div>
+                <p>{{answer.text}}</p>
+            </div>
+            <footer><span>{{answer.isCorrect ? 'Correct Answer' : 'Incorrect'}}</span>@if(answer.isCorrect){<small><svg lucideCheck></svg>Answer key</small>}</footer>
+        </article>
+        } @empty {
+        <section class="state compact">
+            <p>This question has no answer options.</p>
+        </section>}
+    </section>
+
+    <section class="assigned">
+        <header>
+            <div>
+                <h2>Assigned Quiz @if(question.quizId){<span>1 Quiz</span>}</h2>
+                <p>The quiz currently using this question.</p>
+            </div>
+        </header>
+        @if (question.quizId) {
+        <article>
+            <div>
+                <h3>{{question.quizTitle || 'Quiz #' + question.quizId}}<small>#QUIZ-{{question.quizId}}</small></h3>
+            </div><a [routerLink]="['/admin/quizzes',question.quizId]">View Quiz <svg lucideExternalLink></svg></a></article>} @else {
+        <section class="state compact">
+            <p>This question is currently available in the question repository.</p>
+        </section>}
+    </section>
+
+    @if(deleteOpen()){
+    <div class="overlay" (click)="closeDelete()">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" (click)="$event.stopPropagation()">
+            <header><i><svg lucideTriangleAlert></svg></i>
+                <div>
+                    <h2 id="delete-title">Delete Question</h2>
+                    <p>This action cannot be undone</p>
+                </div><button type="button" aria-label="Close" [disabled]="deleting()" (click)="closeDelete()"><svg lucideX></svg></button></header>
+            <div class="warning-copy">Are you sure you want to delete <b>Q-{{question.id}}</b> and all of its answer options? Questions with student answers cannot be deleted.</div>@if(deleteError()){
+            <div class="delete-error" role="alert">{{deleteError()}}</div>}
+            <footer><button type="button" [disabled]="deleting()" (click)="closeDelete()">Cancel</button><button class="archive" type="button" [disabled]="deleting()" (click)="confirmDelete()">{{deleting() ? 'Deleting...' : 'Delete Question'}}</button></footer>
+        </section>
+    </div>} }
+</main>

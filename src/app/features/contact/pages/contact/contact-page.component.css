@@ -1,0 +1,526 @@
+:host {
+    display: block;
+    background: #f8f9ff;
+    color: #0b1c30
+}
+
+.contact-page {
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100dvh - 64px)
+}
+
+.halo {
+    position: absolute;
+    top: -160px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 720px;
+    height: 360px;
+    border-radius: 50%;
+    background: #dbe1ff66;
+    filter: blur(60px);
+    pointer-events: none
+}
+
+.container {
+    max-width: 1280px;
+    margin: auto;
+    padding-inline: 48px
+}
+
+.contact-hero {
+    position: relative;
+    padding-block: 40px 80px
+}
+
+.support-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: max-content;
+    margin: auto;
+    padding: 6px 12px;
+    border-radius: 99px;
+    background: #eff4ff;
+    color: #004ac6;
+    font-size: 12px;
+    font-weight: 700
+}
+
+.support-pill i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2563eb
+}
+
+.page-heading {
+    max-width: 640px;
+    margin: 0 auto 40px;
+    text-align: center
+}
+
+.page-heading h1 {
+    margin: 8px 0 12px;
+    font: 700 32px/40px 'Plus Jakarta Sans', sans-serif
+}
+
+.page-heading p {
+    color: #434655;
+    line-height: 25px
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    max-width: 1152px;
+    margin: auto
+}
+
+.form-card,
+.success-card,
+.support-card,
+.guide-card {
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 12px #0f172a0d;
+    padding: 32px
+}
+
+.form-card form {
+    display: grid;
+    gap: 24px
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600
+}
+
+em {
+    color: #ba1a1a;
+    font-style: normal
+}
+
+input,
+select,
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid #e5eeff;
+    border-radius: 12px;
+    background: #fff;
+    color: #0b1c30;
+    padding: 11px 14px;
+    font: 400 16px/24px Inter, sans-serif;
+    outline: none
+}
+
+textarea {
+    resize: vertical;
+    min-height: 140px
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #dbe1ff
+}
+
+.select-wrap {
+    position: relative
+}
+
+.select-wrap select {
+    appearance: none;
+    padding-right: 42px
+}
+
+.select-wrap svg {
+    position: absolute;
+    right: 13px;
+    top: 14px;
+    color: #434655;
+    pointer-events: none
+}
+
+.hint {
+    font-size: 12px;
+    color: #434655;
+    font-weight: 400
+}
+
+.counter {
+    align-self: flex-end;
+    margin-top: -24px;
+    color: #737686;
+    font-size: 12px;
+    font-weight: 400
+}
+
+.tip {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 12px;
+    background: #eff4ff;
+    color: #006591
+}
+
+.tip p {
+    margin: 0;
+    color: #434655;
+    font-size: 13px;
+    line-height: 20px
+}
+
+.form-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px
+}
+
+.form-action>span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #434655;
+    font-size: 12px
+}
+
+.form-action>span svg {
+    color: #006242
+}
+
+.primary-button,
+.success-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 12px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer
+}
+
+.primary-button:hover,
+.success-actions a:hover {
+    background: #004ac6
+}
+
+.error-banner {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    background: #ffdad6;
+    color: #93000a
+}
+
+.error-banner p {
+    margin: 3px 0 0;
+    font-size: 13px
+}
+
+.field-grid small,
+label>small:not(.hint) {
+    color: #ba1a1a;
+    font-size: 12px
+}
+
+.support-column {
+    display: grid;
+    gap: 20px;
+    align-content: start
+}
+
+.support-card {
+    display: grid;
+    gap: 14px;
+    padding: 24px
+}
+
+.support-title {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.support-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #e5eeff;
+    color: #004ac6
+}
+
+.support-title small {
+    color: #434655;
+    font-size: 11px;
+    letter-spacing: .06em
+}
+
+.support-title h2,
+.support-card>h2 {
+    margin: 3px 0;
+    font-size: 20px
+}
+
+.support-card p,
+.guide-card p {
+    margin: 0;
+    color: #434655;
+    font-size: 14px;
+    line-height: 23px
+}
+
+.verified {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #006242;
+    font-size: 12px
+}
+
+.support-card>a {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px;
+    border-radius: 10px;
+    color: #0b1c30
+}
+
+.support-card>a:hover {
+    background: #eff4ff
+}
+
+.support-card>a>span {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: #e5eeff;
+    color: #006591
+}
+
+.support-card>a b {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px
+}
+
+.support-card>a small {
+    color: #434655;
+    font-size: 12px;
+    font-weight: 400
+}
+
+.guide-card {
+    background: #dce9ff;
+    position: relative
+}
+
+.guide-card>span {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: white;
+    color: #004ac6;
+    font-size: 11px;
+    font-weight: 700
+}
+
+.guide-card>svg {
+    position: absolute;
+    right: 22px;
+    top: 22px;
+    color: #004ac6
+}
+
+.guide-card h2 {
+    font-size: 20px;
+    margin: 22px 0 8px
+}
+
+.guide-card>a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    color: #004ac6;
+    font-size: 13px;
+    font-weight: 700
+}
+
+.success-card {
+    text-align: center;
+    padding: 56px 32px
+}
+
+.success-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: auto;
+    border-radius: 16px;
+    background: #d4ffeb;
+    color: #006242
+}
+
+.success-card h2 {
+    margin: 20px 0 8px;
+    font: 700 26px/34px 'Plus Jakarta Sans', sans-serif
+}
+
+.success-card>p {
+    max-width: 480px;
+    margin: auto;
+    color: #434655;
+    line-height: 24px
+}
+
+.reference {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    max-width: 390px;
+    margin: 28px auto;
+    padding: 16px;
+    border-radius: 12px;
+    background: #eff4ff;
+    text-align: left;
+    color: #434655;
+    font-size: 13px
+}
+
+.reference strong,
+.reference b {
+    color: #0b1c30
+}
+
+.reference b {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #006242;
+    font-size: 12px
+}
+
+.reference b i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #006242
+}
+
+.success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap
+}
+
+.success-actions button {
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: #e5eeff;
+    color: #0b1c30;
+    font-weight: 600;
+    cursor: pointer
+}
+
+.success-actions a {
+    padding: 12px 16px
+}
+
+@media(max-width:900px) {
+    .container {
+        padding-inline: 24px
+    }
+
+    .contact-layout {
+        grid-template-columns: 1fr
+    }
+
+    .support-column {
+        grid-template-columns: 1fr 1fr
+    }
+
+    .guide-card {
+        grid-column: 1/-1
+    }
+}
+
+@media(max-width:600px) {
+    .container {
+        padding-inline: 20px
+    }
+
+    .contact-hero {
+        padding-block: 28px 48px
+    }
+
+    .page-heading {
+        margin-bottom: 28px
+    }
+
+    .page-heading h1 {
+        font-size: 28px;
+        line-height: 36px
+    }
+
+    .field-grid,
+    .support-column {
+        grid-template-columns: 1fr
+    }
+
+    .form-card,
+    .success-card {
+        padding: 24px
+    }
+
+    .form-action {
+        align-items: stretch;
+        flex-direction: column
+    }
+
+    .primary-button {
+        width: 100%
+    }
+
+    .guide-card {
+        grid-column: auto
+    }
+
+    .reference {
+        grid-template-columns: 1fr
+    }
+}

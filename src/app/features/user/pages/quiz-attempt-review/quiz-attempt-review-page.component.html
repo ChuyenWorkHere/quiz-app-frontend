@@ -1,0 +1,92 @@
+@if (loading()) {
+<main class="review-page">
+    <section class="review-state" role="status"><span class="spinner"></span>
+        <p>Loading submitted answers...</p>
+    </section>
+</main>
+} @else if (errorMessage()) {
+<main class="review-page">
+    <section class="review-state error-state" role="alert"><svg lucideCircleAlert [size]="38" />
+        <h1>Review unavailable</h1>
+        <p>{{ errorMessage() }}</p>
+        <div><a routerLink="/user/quiz-history">Quiz History</a><button type="button" (click)="loadReview()"><svg lucideRefreshCw [size]="17" />Try Again</button></div>
+    </section>
+</main>
+} @else if (review(); as review) {
+<main class="review-page">
+    <nav class="breadcrumbs"><a routerLink="/user/dashboard">Study Portal</a><svg lucideChevronRight [size]="14" /><a routerLink="/user/quiz-history">Quiz History</a><svg lucideChevronRight [size]="14" /><span>{{ review.quizTitle }}</span><svg lucideChevronRight [size]="14" /><strong>Attempt #{{ review.attemptId }} Review</strong></nav>
+
+    <section class="review-heading">
+        <div>
+            <h1>{{ review.quizTitle }} — Attempt Review</h1>
+            <p>Compare your submitted choices with the correct answers for each question.</p>
+        </div>
+        <a [routerLink]="['/user/quizzes', review.quizId]"><svg lucideRefreshCw [size]="17" />Retake Quiz</a>
+    </section>
+
+    <section class="metrics">
+        <article>
+            <header><span>Overall Score</span><i><svg lucideMedal [size]="18" /></i></header>
+            <div><strong>{{ review.score | number:'1.0-2' }}%</strong><small>Target {{ review.passedScore }}%</small></div>
+            <footer [class.failed-text]="!review.isPassed">@if (review.isPassed) {<svg lucideCheckCircle2 [size]="14" />} @else {<svg lucideCircleX [size]="14" />}{{ review.isPassed ? 'Passed' : 'Not Passed' }}</footer>
+        </article>
+        <article>
+            <header><span>Correct Answers</span><i class="green"><svg lucideCheck [size]="18" /></i></header>
+            <div><strong class="green-text">{{ review.correctAnswers }}</strong><small>/ {{ review.totalQuestions }} items</small></div>
+            <footer class="progress"><i><b [style.width.%]="review.score"></b></i><span>{{ review.score | number:'1.0-1' }}%</span></footer>
+        </article>
+        <article>
+            <header><span>Incorrect / Missed</span><i class="red"><svg lucideCircleX [size]="18" /></i></header>
+            <div><strong class="red-text">{{ incorrectCount() }}</strong><small>/ {{ review.totalQuestions }} items</small></div>
+            <footer class="progress red-progress"><i><b [style.width.%]="100 - review.score"></b></i><span>{{ 100 - review.score | number:'1.0-1' }}%</span></footer>
+        </article>
+        <article>
+            <header><span>Time Spent</span><i class="blue"><svg lucideClock3 [size]="18" /></i></header>
+            <div><strong class="time">{{ formatDuration(review.durationSeconds) }}</strong></div>
+            <footer class="pace"><svg lucideGauge [size]="15" />{{ review.totalQuestions ? (review.durationSeconds / review.totalQuestions | number:'1.0-0') : 0 }}s average per question</footer>
+        </article>
+    </section>
+
+    <section class="controls">
+        <div class="filter-buttons"><button type="button" [class.active]="filter() === 'all'" (click)="filter.set('all'); showAll.set(false)">All Questions ({{ review.totalQuestions }})</button><button type="button" [class.active]="filter() === 'correct'" (click)="filter.set('correct'); showAll.set(true)"><i class="green-dot"></i>Correct ({{ review.correctAnswers }})</button>
+            <button type="button" [class.active]="filter() === 'incorrect'" (click)="filter.set('incorrect'); showAll.set(true)"><i class="red-dot"></i>Incorrect / Missed ({{ incorrectCount() }})</button><button type="button" [class.active]="filter() === 'unanswered'"
+                (click)="filter.set('unanswered'); showAll.set(true)">Unanswered ({{ unansweredCount() }})</button></div>
+        <div class="control-actions"><label><svg lucideSearch [size]="17" /><input type="search" [ngModel]="search()" (ngModelChange)="search.set($event); showAll.set(true)" placeholder="Search reviewed questions..." /></label><button type="button" (click)="expanded.set(!expanded())"><svg lucideExpand [size]="16" />{{ expanded() ? 'Collapse Answer Details' : 'Expand Answer Details' }}</button></div>
+    </section>
+
+    <section class="question-list">
+        @for (question of visibleQuestions(); track question.id) {
+        <article class="question-card" [class.incorrect]="!question.isCorrect">
+            <header>
+                <div><strong>Question {{ question.number.toString().padStart(2, '0') }}</strong><i>•</i><span>{{ questionTypeLabel(question.questionType) }}</span></div>
+                <div><b [class.incorrect]="!question.isCorrect">@if (question.isCorrect) {<svg lucideCheckCircle2 [size]="14" />Correct} @else {<svg lucideCircleX [size]="14" />{{ question.isAnswered ? 'Incorrect' : 'Unanswered' }}}</b></div>
+            </header>
+            <h2>{{ question.content }}</h2>
+            @if (question.image) {<img class="review-question-image" [src]="question.image" alt="Question illustration">}
+            <div class="answer-comparison">
+                <section class="submitted" [class.wrong]="!question.isCorrect"><small>Your Submitted Answer</small><strong>{{ selectedAnswer(question) }}</strong></section>@if (!question.isCorrect) {
+                <section class="correct-answer"><small>Correct Answer</small><strong>{{ correctAnswer(question) }}</strong></section>}</div>
+            <details [open]="expanded()">
+                <summary><span>View all answer options</span><svg lucideChevronDown [size]="17" /></summary>
+                <div class="review-options">@for (answer of question.answers; track answer.id) {
+                    <div [class.selected]="answer.isSelected" [class.correct]="answer.isCorrect" [class.selected-wrong]="answer.isSelected && !answer.isCorrect"><span>{{ answer.text }}</span><small>@if (answer.isSelected) {Your choice} @if (answer.isCorrect) {Correct answer}</small></div>}</div>
+            </details>
+        </article>
+        } @empty {
+        <section class="empty"><svg lucideSearch [size]="30" />
+            <h2>No reviewed questions found</h2>
+            <p>Change the current filter or search phrase.</p>
+        </section>}
+    </section>
+
+    @if (!showAll() && visibleQuestions().length
+    < review.questions.length) {<section class="load-more"><span>Showing <strong>{{ visibleQuestions().length }}</strong> of {{ review.questions.length }} questions</span><button type="button" (click)="showAll.set(true)">View More</button></section>}
+
+        <section class="bottom-actions">
+            <a routerLink="/user/quiz-history"><svg lucideArrowLeft [size]="18" />Quiz History</a>
+            <div><a routerLink="/user/quizzes">Browse Catalog</a>
+                <a class="primary" [routerLink]="['/user/quizzes', review.quizId]"><svg lucideRefreshCw [size]="17" />Retake This Quiz<svg lucideArrowRight [size]="16" /></a>
+            </div>
+        </section>
+</main>
+}

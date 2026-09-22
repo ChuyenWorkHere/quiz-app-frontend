@@ -1,0 +1,16 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: #f8f9ff
+}
+
+.admin-shell {
+    min-height: 100vh;
+    padding-left: 288px
+}
+
+@media(max-width:960px) {
+    .admin-shell {
+        padding-left: 0
+    }
+}

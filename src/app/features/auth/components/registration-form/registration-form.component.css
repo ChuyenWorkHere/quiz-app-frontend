@@ -1,0 +1,21 @@
+:host { display: block; }
+label { 
+    display: block; 
+    color: #0b1c30; 
+    font-size: .875rem; 
+    font-weight: 600; }
+.field { 
+    display: block; 
+    width: 100%; 
+    margin-top: .375rem; 
+    border-radius: .75rem; 
+    background: #eff4ff; 
+    padding: .75rem 1rem; 
+    color: #0b1c30; 
+    font-weight: 400; 
+    outline: none; 
+}
+.field:focus { 
+    background: white; 
+    box-shadow: 0 0 0 2px #2563eb; 
+}

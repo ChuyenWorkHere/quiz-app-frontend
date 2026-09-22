@@ -1,0 +1,174 @@
+:host {
+    display: block;
+}
+
+.preview {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 20px 30px -12px rgb(15 23 42 / .2);
+}
+
+.preview-top,
+.eyebrow,
+.timer,
+.preview-bottom,
+.mastery,
+.recall-mode {
+    display: flex;
+    align-items: center;
+}
+
+.preview-top,
+.preview-bottom {
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.eyebrow {
+    gap: 8px;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: #434655;
+}
+
+i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #006242;
+}
+
+.timer {
+    gap: 4px;
+    padding: 5px 8px;
+    border-radius: 99px;
+    background: #eff4ff;
+    color: #006591;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.question {
+    padding: 16px;
+    border-radius: 12px;
+    background: #eff4ff;
+}
+
+.question>span {
+    color: #006591;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+h2 {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 26px;
+}
+
+.answers {
+    display: grid;
+    gap: 10px;
+}
+
+button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: #f5f8ff;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+}
+
+button:hover {
+    background: #e5eeff;
+}
+
+button.selected {
+    background: #2563eb;
+    color: white;
+}
+
+button svg {
+    margin-left: auto;
+}
+
+.answer-key {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: #e5eeff;
+    color: #0b1c30;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.selected .answer-key {
+    background: white;
+    color: #004ac6;
+}
+
+.mastery {
+    gap: 8px;
+}
+
+.progress-ring {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: conic-gradient(#006242 88%, #e5eeff 0);
+    position: relative;
+}
+
+.progress-ring::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: white;
+}
+
+strong {
+    font-size: 12px;
+}
+
+p {
+    font-size: 12px;
+    color: #434655;
+    margin-top: 2px;
+}
+
+.recall-mode {
+    font-size: 10px;
+    color: #004ac6;
+    font-weight: 600;
+    gap: 4px;
+}
+
+button:focus-visible {
+    outline: 2px solid #004ac6;
+    outline-offset: 3px;
+}
+
+@media(max-width: 480px) {
+    .preview {
+        padding: 20px;
+    }
+
+    .recall-mode {
+        display: none;
+    }
+}

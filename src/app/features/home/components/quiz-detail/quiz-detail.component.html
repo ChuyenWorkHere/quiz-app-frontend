@@ -1,0 +1,18 @@
+<dialog #dialog aria-labelledby="quiz-detail-title" (click)="$event.target === dialog && dialog.close()">
+  @if (quiz(); as quiz) {
+  <div class="quiz-detail">
+    <button class="close-button" type="button" aria-label="Close quiz details" (click)="dialog.close()">
+      <svg lucideX [size]="22" aria-hidden="true"></svg>
+    </button>
+    <h2 id="quiz-detail-title">{{ quiz.title }}</h2>
+    <p>{{ quiz.description }}</p>
+    <div class="detail-meta">{{ quiz.numberOfQuestions }} questions · {{ quiz.duration }} minutes</div>
+    <p class="preview-notice">Explore this quiz preview. Taking the full quiz is not available yet.</p>
+    <a class="primary-button" routerLink="/register" (click)="dialog.close()">Create an account
+      <svg lucideArrowRight [size]="18" aria-hidden="true"></svg>
+    </a>
+    <a class="login-link" routerLink="/login" (click)="dialog.close()">Already a member? Log in
+    </a>
+  </div>
+  }
+</dialog>

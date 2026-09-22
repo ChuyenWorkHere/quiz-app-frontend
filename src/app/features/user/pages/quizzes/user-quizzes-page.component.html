@@ -1,0 +1,78 @@
+<main class="catalog-page">
+    <div class="breadcrumbs">
+        <span>Study Portal</span>
+        <svg lucideChevronRight [size]="14" aria-hidden="true"></svg>
+        <strong>Available Quizzes</strong>
+    </div>
+    <section class="hero">
+        <div>
+            <h1>Available Quizzes</h1>
+            <p>Sharpen recall with adaptive diagnostics and faculty-verified modular challenge tests.</p>
+        </div>
+    </section>
+    <section class="filters">
+        <div class="filter-row">
+            <label>
+                <svg lucideSearch [size]="21" aria-hidden="true"></svg>
+                <input type="search"
+                placeholder="Search by quiz title, topic, or subject keyword..." aria-label="Search quizzes" [value]="query()"
+                (input)="changeSearch($any($event.target).value)">
+                @if(query()){
+                <button type="button" aria-label="Clear search" (click)="clearSearch()">
+                    <svg lucideX [size]="18" aria-hidden="true">
+                    </svg>
+                </button>}
+            </label>
+            <div class="sort">
+                <svg lucideSlidersHorizontal [size]="18" aria-hidden="true"></svg>
+                <small>Sort:</small>
+                <select aria-label="Sort quizzes" [ngModel]="sort()" (ngModelChange)="changeSort($event)">
+                    <option value="popular">Most Popular</option>
+                    <option value="duration">Shortest Duration</option>
+                    <option value="recent">Recently Added</option>
+                    <option value="rated">Highest Rated</option>
+                </select>
+            </div>
+        </div>
+    </section>
+    @if(state() === 'loading'){
+    <section class="quiz-grid" aria-label="Loading quizzes">
+        @for(item of [1,2,3,4,5,6]; track item){
+        <app-quiz-card-skeleton /> }
+    </section>
+    } @else if(state() === 'error'){
+    <section class="empty-state">
+        <span class="error">
+          <svg lucideCircleAlert [size]="42" aria-hidden="true"></svg>
+        </span>
+        <h2>Unable to Load Available Quizzes</h2>
+        <p>We couldn't connect to the assessment catalog. Check your connection and try again.</p>
+        <button type="button" class="primary" (click)="retry()">
+          <svg lucideRefreshCw [size]="18" aria-hidden="true"></svg>
+          Retry Loading
+        </button>
+    </section>
+    } @else if(!filteredQuizzes().length){
+    <section class="empty-state"><span><svg lucideSearch
+        [size]="42" aria-hidden="true"></svg></span>
+        <h2>No Quizzes Match Your Search</h2>
+        <p>We couldn't find any assessments matching those parameters. Try clearing your filters or exploring another academic discipline.</p>
+        <div>
+            <button type="button" class="primary" (click)="resetFilters()">Clear Search &amp; Filters</button>
+            <button type="button" class="secondary" (click)="resetFilters()">
+              Explore All Subjects
+            </button>
+        </div>
+    </section>
+    } @else{
+    <section class="quiz-grid">@for(quiz of filteredQuizzes(); track quiz.id){
+        <app-quiz-card [quiz]="quiz" /> }
+    </section>
+    @if(totalPages() > 1){
+    <nav class="pagination" aria-label="Quiz catalog pages">
+        <button type="button" class="secondary" [disabled]="page() <= 1" (click)="changePage(page() - 1)">Previous</button>
+        <span>Page {{page()}} of {{totalPages()}}</span>
+        <button type="button" class="secondary" [disabled]="page() >= totalPages()" (click)="changePage(page() + 1)">Next</button>
+    </nav>
+    } }
+</main>

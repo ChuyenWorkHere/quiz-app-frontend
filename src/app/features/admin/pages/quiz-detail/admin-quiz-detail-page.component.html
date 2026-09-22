@@ -1,0 +1,71 @@
+<main>
+    @if (loading()) {
+    <section class="empty" role="status"><svg class="loading-spin" lucideRefreshCw [size]="34"></svg>
+        <h3>Loading quiz details...</h3>
+    </section>
+    } @else if (errorMessage()) {
+    <section class="empty" role="alert"><svg lucideCircleAlert [size]="34"></svg>
+        <h3>Unable to display quiz</h3>
+        <p>{{ errorMessage() }}</p><button type="button" (click)="loadQuizDetail()">Try Again</button></section>
+    } @else if (quiz(); as quiz) {
+    <div class="topline">
+        <nav><a routerLink="/admin/dashboard">Admin Portal</a><svg lucideChevronRight [size]="15"></svg><a routerLink="/admin/quizzes">Quiz Management</a><svg lucideChevronRight [size]="15"></svg><strong>{{ quiz.title }}</strong></nav>
+    </div>
+    <header class="hero">
+        <div><span class="status-pill" [class.issue]="!quiz.isActive"><i></i>{{ quiz.isActive ? 'Active' : 'Inactive' }}</span>
+            <h1>{{ quiz.title }}</h1>
+            <p>{{ quiz.description }}</p>
+        </div>
+    </header>
+    <section class="overview">
+        <div class="metrics">
+            <article>
+                <header><span>Duration</span><svg lucideClock3 [size]="20"></svg></header><strong>{{ quiz.duration }} <small>Mins</small></strong>
+                <p>Auto-submits on expiration</p>
+            </article>
+            <article>
+                <header><span>Questions</span><svg lucideFileText [size]="20"></svg></header><strong>{{ questions().length }} <small>Items</small></strong>
+                <p>Quiz-specific question set</p>
+            </article>
+            <article>
+                <header><span>Passing Cutoff</span><svg lucideCheckCircle2 [size]="20"></svg></header><strong>{{ quiz.passedScore }}%</strong>
+                <p>Required passing score</p>
+            </article>
+        </div>
+        <aside class="cover">@if (quiz.image) {
+            <div [style.background-image]="'url(' + quiz.image + ')'" role="img" [attr.aria-label]="quiz.title"></div>} @else {
+            <div><svg lucideImage [size]="48"></svg><span>No cover image</span></div>}
+            <footer><span><b>Curriculum Cover Asset</b><small>{{ quiz.image || 'No image configured' }}</small></span></footer>
+        </aside>
+    </section>
+    <section class="questions-panel">
+        <header>
+            <div><span class="section-icon"><svg lucideListChecks [size]="21"></svg></span>
+                <h2>Assigned Questions <small>({{ questions().length }} Questions)</small></h2>
+            </div><a class="add-bank" routerLink="/admin/questions/new">Add Question</a></header>
+        <div class="filters"><label><svg lucideSearch [size]="18"></svg><input [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="Filter questions by content..."></label><select [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)"><option value="all">All Question Types</option><option value="0">Single Choice</option><option value="1">Multiple Select</option><option value="2">True / False</option></select>
+            <select [ngModel]="difficultyFilter()" (ngModelChange)="difficultyFilter.set($event)">
+                <option value="all">All Difficulty</option>
+                <option value="2">Easy</option>
+                <option value="1">Medium</option>
+                <option value="0">Hard</option>
+                </select>
+        </div>
+        <div class="question-list">@for (question of filteredQuestions(); track question.id) {
+            <article class="question">
+                <div class="question-main">
+                    <div>
+                        <div class="badges"><b>#{{ question.id.toString().padStart(2, '0') }}</b><span>{{ questionType(question.questionType) }}</span><em>{{ difficulty(question.level) }}</em></div>
+                        <p [routerLink]="['/admin/questions', question.id]">{{ question.content }}</p>
+                    </div>
+                    <div class="question-actions"><button type="button" title="Toggle answer key" (click)="toggleAnswer(question.id)"><svg lucideEye [size]="18"></svg></button><a title="Edit question" [routerLink]="['/admin/questions', question.id, 'edit']"><svg lucidePencil [size]="18"></svg></a></div>
+                </div>@if (expanded().has(question.id)) {
+                <div class="answer"><strong><svg lucideCheckCircle2 [size]="16"></svg>Correct Answer: {{ correctAnswer(question) }}</strong></div>}</article>
+            } @empty {
+            <div class="empty"><svg lucideSearch [size]="30"></svg>
+                <h3>No Questions Found</h3>
+                <p>This quiz has no questions or none match the current filters.</p><button type="button" (click)="resetFilters()">Reset Filters</button></div>}</div>
+    </section>
+    <footer class="bottom-actions"><button routerLink="/admin/quizzes"><svg lucideArrowLeft [size]="18"></svg>Back to List</button><a class="publish" [routerLink]="['/admin/quizzes', quiz.id, 'edit']">Edit Quiz</a></footer>
+    }
+</main>

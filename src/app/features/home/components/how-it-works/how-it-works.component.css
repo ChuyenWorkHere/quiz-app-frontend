@@ -1,0 +1,111 @@
+:host {
+    display: block;
+}
+
+.section-wrap {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 48px;
+}
+
+.method-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+h2 {
+    margin: 8px 0;
+    font: 700 32px/40px 'Plus Jakarta Sans', Inter, sans-serif;
+    letter-spacing: -.02em;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+}
+
+.method-heading p {
+    color: #434655;
+    line-height: 24px;
+}
+
+.methodology {
+    background: #eff4ff;
+    padding-block: 64px;
+    scroll-margin-top: 64px;
+}
+
+.method-heading {
+    max-width: 640px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+.method-heading>span {
+    text-transform: uppercase;
+    color: #006591;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.method-grid article {
+    padding: 32px;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.method-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+}
+
+.blue {
+    background: #c9e6ff;
+    color: #006591;
+}
+
+.green {
+    background: #6ffbbe;
+    color: #006242;
+}
+
+.purple {
+    background: #dce9ff;
+    color: #004ac6;
+}
+
+.method-grid p {
+    font-size: 14px;
+    line-height: 22px;
+    color: #434655;
+}
+
+@media(max-width: 1023px) {
+    .section-wrap {
+        padding-inline: 24px;
+    }
+
+    .method-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+    .section-wrap {
+        padding-inline: 20px;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 36px;
+    }
+}

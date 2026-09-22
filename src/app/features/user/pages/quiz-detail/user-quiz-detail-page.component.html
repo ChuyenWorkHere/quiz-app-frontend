@@ -1,0 +1,87 @@
+<main class="detail-page">
+    @if (loading()) {
+    <section class="detail-state" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+    </section>
+    } @else if (errorMessage()) {
+    <section class="detail-state error-state" role="alert">
+        <span><svg lucideCircleAlert [size]="38" /></span>
+        <h1>Quiz unavailable</h1>
+        <p>{{ errorMessage() }}</p>
+        <div>
+            <a routerLink="/user/quizzes"><svg lucideArrowLeft [size]="18" />Back to Quizzes</a>
+            <button type="button" (click)="loadQuiz()"><svg lucideRefreshCw [size]="18" />Try Again</button></div>
+    </section>
+    } @else if (quiz(); as quiz) {
+    <nav class="breadcrumbs">
+        <a routerLink="/user/dashboard">Home</a>
+        <svg lucideChevronRight [size]="14" />
+        <a routerLink="/user/quizzes">Quizzes</a>
+        <svg lucideChevronRight [size]="14" />
+        <strong>{{ quiz.title }}</strong>
+    </nav>
+    <section class="hero">
+        <div class="cover">
+            @if (quiz.image) { <img [src]="quiz.image" [alt]="quiz.title"> } @else {
+            <div class="cover-placeholder"><svg lucideListChecks [size]="56" /></div> }
+        </div>
+        <div>
+            <h1>{{ quiz.title }}</h1>
+            <p>{{ quiz.description }}</p>
+        </div>
+    </section>
+    <section class="metrics">
+        <article>
+            <header>
+                <small>Assessment Duration</small><span><svg lucideClock3 [size]="20" /></span>
+            </header><strong>{{ quiz.duration }}
+                Minutes</strong>
+            <p>Strict proctored countdown timer with automated session submission.</p>
+        </article>
+        <article>
+            <header>
+                <small>Question Volume</small>
+                <span><svg lucideListChecks [size]="20" /></span>
+            </header>
+            <strong>{{ quiz.numberOfQuestions }} Questions</strong>
+            <p>Single choice, multiple select &amp; algorithmic scenario debugging.</p>
+        </article>
+        <article>
+            <header>
+                <small>Passing Threshold</small>
+                <span><svg lucideMedal [size]="20" /></span>
+            </header>
+            <strong>{{ quiz.passedScore }}% Required</strong>
+            <p>Reach the required score to successfully pass this quiz.</p>
+        </article>
+    </section>
+    <section class="actions">
+        <div class="action-row">
+            <div class="secondary-actions">
+                <a routerLink="/user/quizzes"><svg lucideArrowLeft [size]="18" />Back to Quizzes
+                </a>
+            </div>
+            <div class="primary-action">
+                <button type="button" (click)="startConfirmation.set(true)">Start Quiz<svg lucideArrowRight [size]="22" /></button>
+            </div>
+        </div>
+        <p class="disclaimer"><svg lucideInfo [size]="16" /><span>By clicking <strong>Start Quiz</strong>, your
+                {{ quiz.duration }}-minute countdown begins immediately. Ensure you have uninterrupted connectivity.</span></p>
+    </section>
+    }
+</main>
+@if(quiz(); as quiz){ @if(startConfirmation()){
+<div class="modal-backdrop" (click)="startConfirmation.set(false)">
+    <section class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()"><span>
+        <svg lucideCalendarCheck [size]="30" /></span>
+        <h2>Ready to begin?</h2>
+        <p>Your {{ quiz.duration }}-minute timer starts immediately and the assessment submits automatically when time expires.</p>
+        @if (startError()) { <p class="start-error" role="alert">{{ startError() }}</p> }
+        <div>
+            <button type="button" [disabled]="starting()" (click)="startConfirmation.set(false)">Cancel</button>
+            <button type="button" [disabled]="starting()" (click)="startQuiz()">
+                {{ starting() ? 'Starting...' : 'Start' }}
+            </button>
+        </div>
+    </section>
+</div>} }

@@ -1,0 +1,8 @@
+<article>
+  <div class="cover"><img [src]="quiz().image" [alt]="quiz().title" loading="lazy" /></div>
+  <div class="content"><h2>{{ quiz().title }}</h2><p>{{ quiz().description }}</p><div class="meta"><span><svg lucideClock3 [size]="15" />{{ quiz().duration }} Mins</span><span><svg lucideListChecks [size]="15" />{{ questionCount() }} Questions</span></div></div>
+  <footer>
+    @if (quiz().attempts !== undefined || passRate() !== undefined) {<div class="performance">@if (quiz().attempts !== undefined) {<strong>{{ quiz().attempts }} attempts</strong>}@if (passRate() !== undefined) {<small>{{ passRate() }}% pass rate</small>}</div>}
+    <div class="actions">@if (mode() === 'preview') {<button type="button" class="primary" (click)="viewQuiz.emit(quiz())">View Quiz<svg lucideArrowRight [size]="16" /></button>} @else {<a class="secondary" [routerLink]="['/user/quizzes', quiz().id]">View Details</a><a class="primary" [routerLink]="['/user/quizzes', quiz().id]">Start<svg lucideArrowRight [size]="16" /></a>}</div>
+  </footer>
+</article>

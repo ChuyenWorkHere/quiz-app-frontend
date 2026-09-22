@@ -1,0 +1,158 @@
+<app-header />
+<main class="showcase">
+    <section class="hero">
+        <div class="container"><span class="guest-pill"><i></i><svg lucideBookOpen [size]="16"
+                    aria-hidden="true"></svg>Public Academic Catalog · Guest Access</span>
+            <h1>Explore Our Quizzes</h1>
+            <p>Browse available quizzes and find one that matches your interests. Evaluate core concepts across modern
+                computing domains with zero account pressure.</p>
+            <div class="discovery">
+                <div class="search-box flex justify-between">
+                    <div class="flex items-center gap-2">
+                        <svg lucideSearch [size]="22" aria-hidden="true"></svg>
+                        <input class="w-100" type="search" aria-label="Search quizzes on this page"
+                            placeholder="Search quizzes on this page..." [value]="query()"
+                            (input)="query.set($any($event.target).value)" />
+                    </div>
+                    <button type="button" aria-label="Clear search" (click)="clear()">
+                        <svg lucideX [size]="18" aria-hidden="true"></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="metrics">
+        <div class="container metrics-grid">
+            <div><strong>{{ loading() || error() ? '—' : totalItems() }}</strong><span>Total Quizzes</span></div>
+            <div><strong>{{ loading() || error() ? '—' : questionsOnPage() }}</strong><span>Questions on This Page</span></div>
+            <div><strong>Free</strong><span>Guest Previews</span></div>
+            <div><strong>100%</strong><span>Academic Integrity</span></div>
+        </div>
+    </section>
+    <section class="catalog container">
+        <div class="catalog-heading">
+            <div>
+                <h2>Available Assessments @if (!loading() && !error()) { <small>({{ quizzes().length }} on this page)</small> }</h2>
+            </div><span class="auth-note"><svg lucideLockKeyhole [size]="16" aria-hidden="true"></svg>Attempting
+                requires authentication</span>
+        </div>
+        @if (loading()) {
+        <div class="empty-state" role="status">Loading quizzes...</div>
+        } @else if (error()) {
+        <div class="empty-state error-state" role="alert">
+            <span>
+                <svg lucideCloudOff [size]="40" aria-hidden="true">
+                </svg>
+            </span>
+            <h3>Unable to Load Quiz Catalog</h3>
+            <p>A transient communication issue prevented the public showcase feed from loading. Your guest browsing
+                session is safe.</p>
+            <button class="primary-button" type="button" (click)="loadQuizzes()">Retry Catalog Feed</button>
+        </div>}
+        @else if (!quizzes().length) {
+        <div class="empty-state">
+            <span>
+                <svg lucideSearchX [size]="40" aria-hidden="true"></svg>
+            </span>
+            <h3>No Quizzes Found</h3>
+            <p>We couldn't find any quizzes matching your search or filter criteria. Try adjusting keywords or clear all
+                active filters.</p><button class="primary-button" type="button" (click)="clear()">Reset Filters &amp;
+                View All</button>
+        </div>}
+        @else {
+        <div class="quiz-grid">
+            @for (quiz of quizzes(); track quiz.id) {
+            <article class="quiz-card">
+                <div class="cover">
+                    @if (quiz.image) {
+                    <img class="quiz-image" [src]="quiz.image" [alt]="quiz.title" loading="lazy" />
+                    } @else {
+                    <div class="cover-art">
+                        <svg lucideBookOpen [size]="46" aria-hidden="true">
+
+                        </svg>
+                    </div>
+                    }
+                    <span class="difficulty">{{ quiz.duration >= 45 ?
+                        'Advanced' : quiz.duration >= 35 ? 'Intermediate' : 'Core' }}</span>
+                </div>
+                <h3 class="line-clamp-2 min-h-14 leading-7">{{ quiz.title }}</h3>
+                <p>{{ quiz.description }}</p>
+                <div class="metadata">
+                    <span>
+                        <svg lucideClock3 [size]="15" aria-hidden="true"></svg>
+                        {{ quiz.duration }}
+                        Mins</span>
+                    <span>
+                        <svg lucideInfo [size]="15" aria-hidden="true"></svg>
+                        {{ quiz.numberOfQuestions }}
+                        Questions
+                    </span>
+                </div>
+                <div class="card-footer">
+                    <button type="button" (click)="selected.set(quiz)">Preview Quiz
+                        <svg lucideArrowRight [size]="17" aria-hidden="true"></svg>
+                    </button>
+                    <small>
+                        <svg lucideLockKeyhole [size]="14" aria-hidden="true"></svg>
+                        Login Required to Attempt
+                    </small>
+                </div>
+            </article>
+            }
+        </div>}
+        @if (totalPages() > 1) {
+        <nav class="pagination" aria-label="Quiz catalog pages">
+            <button class="secondary-button" type="button" [disabled]="loading() || page() <= 1"
+                (click)="changePage(page() - 1)">Previous</button>
+            <span aria-live="polite">Page {{ page() }} of {{ totalPages() }}</span>
+            <button class="secondary-button" type="button" [disabled]="loading() || page() >= totalPages()"
+                (click)="changePage(page() + 1)">Next</button>
+        </nav>
+        }
+    </section>
+    <section class="conversion">
+        <div class="container conversion-inner">
+            <div><span class="track-pill"><svg lucideUserPlus [size]="15" aria-hidden="true"></svg>Beginner to Advanced
+                    Tracks</span>
+                <h2>Ready to test your knowledge?</h2>
+                <p>Log in to start a quiz or create a free student account to track your progress, unlock performance
+                    breakdowns, and earn verifiable certificates.</p>
+            </div>
+            <div class="conversion-actions"><a routerLink="/login" class="primary-button">Log In to Start <svg
+                        lucideArrowRight [size]="18" aria-hidden="true"></svg></a><a routerLink="/register"
+                    class="secondary-button">Create Free Account</a></div>
+        </div>
+    </section>
+</main><app-footer />
+@if (selected(); as quiz) {
+<div class="modal-backdrop" role="presentation" (click)="selected.set(null)">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+        (click)="$event.stopPropagation()">
+        <button class="close" type="button" aria-label="Close dialog" (click)="selected.set(null)">
+            <svg lucideX [size]="20" aria-hidden="true"></svg>
+        </button>
+        <span class="access-pill">
+            <svg lucideLockKeyhole [size]="16" aria-hidden="true"></svg>
+            Access Guard
+
+        </span>
+        <h2 id="modal-title">Authentication Required</h2>
+        <p>Please log in to view quiz details and take this quiz. Guest browsing is limited to curriculum previews to
+            ensure academic scoring integrity.</p>
+        <div class="target">
+            <small>Target Assessment</small>
+            <strong>{{ quiz.title }}</strong>
+            <span>{{ quiz.numberOfQuestions }}
+                Questions · {{ quiz.duration }} Mins
+            </span>
+        </div>
+        <div class="modal-actions">
+            <button type="button" (click)="selected.set(null)">Continue Browsing</button>
+            <a routerLink="/register">Register</a><a routerLink="/login" class="primary-button">Log In
+                <svg lucideArrowRight [size]="16" aria-hidden="true"></svg>
+            </a>
+        </div>
+    </section>
+</div>}
+

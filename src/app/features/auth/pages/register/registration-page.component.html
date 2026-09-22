@@ -1,0 +1,26 @@
+<main class="min-h-dvh bg-[#f8f9ff] text-[#0b1c30]">
+    <app-header [registration]="true" />
+    <section class="relative isolate overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
+        <div class="absolute -left-32 -top-32 -z-10 size-96 rounded-full bg-[#dbe1ff]/40 blur-3xl">
+        </div>
+        <div class="absolute right-[-8rem] top-1/2 -z-10 size-96 rounded-full bg-[#c9e6ff]/40 blur-3xl"></div>
+        <div class="absolute -bottom-24 left-1/3 -z-10 size-80 rounded-full bg-[#4edea3]/10 blur-3xl"></div>
+        <div class="mx-auto w-full max-w-2xl">
+            <app-registration-form />
+            <div class="mt-8 grid gap-4 sm:grid-cols-3">
+                <div class="trust-card">
+                    <b>FERPA Compliant</b>
+                    <span>Strict learner privacy</span>
+                </div>
+                <div class="trust-card">
+                    <b>Zero Spam Policy</b>
+                    <span>Only essential alerts</span>
+                </div>
+                <div class="trust-card">
+                    <b>Verified Badges</b>
+                    <span>Accredited recall certs</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

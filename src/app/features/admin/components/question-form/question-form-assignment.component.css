@@ -1,0 +1,35 @@
+.assignment-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  gap: 14px;
+}
+
+.assignment-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #17283c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.assignment-grid select,
+.assignment-grid input {
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 11px;
+  outline: none;
+  background: #eff4ff;
+  color: #17283c;
+}
+
+.assignment-grid select:focus,
+.assignment-grid input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 2px #2563eb40;
+}
+
+@media (max-width: 800px) {
+  .assignment-grid { grid-template-columns: 1fr; }
+}

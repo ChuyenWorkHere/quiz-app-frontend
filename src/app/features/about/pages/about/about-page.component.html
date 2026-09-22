@@ -1,0 +1,44 @@
+<app-header />
+<main>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container"><a routerLink="/"><svg lucideHouse [size]="16" aria-hidden="true"></svg>Home</a><span
+        aria-hidden="true">/</span><span aria-current="page">About</span></div>
+  </nav>
+  <section class="hero" aria-labelledby="about-title">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="pill"><svg lucideBookOpen [size]="16" aria-hidden="true"></svg>About QuizFlow</span>
+        <h1 id="about-title">About Quiz Application — <span>Empowering Active Learning</span></h1>
+        <p class="intro">QuizFlow is an educational assessment platform designed to help students, educators, and
+          lifelong learners test their knowledge, track their progress, and master key subjects. Users can easily browse
+          categorized quizzes, take timed or practice tests, receive instant scored results with detailed explanations,
+          and review their historical quiz performance over time.</p>
+        <ul class="feature-pills" aria-label="Platform highlights">
+          <li><svg lucideBadgeCheck [size]="18" color="#006242" aria-hidden="true"></svg>Free Access to Curated Quizzes
+          </li>
+          <li><svg lucideChartNoAxesCombined [size]="18" color="#004ac6" aria-hidden="true"></svg>Immediate Analytical
+            Feedback</li>
+          <li><svg lucideHistory [size]="18" color="#006591" aria-hidden="true"></svg>Personalized History &amp; Review
+          </li>
+        </ul>
+      </div>
+      <app-recall-pulse />
+    </div>
+  </section>
+  <app-learning-steps />
+  <app-mission-section />
+  <section class="cta-section container" aria-labelledby="cta-title">
+    <div class="cta-card">
+      <div class="cta-copy"><span class="pill"><svg lucideFlag [size]="16" aria-hidden="true"></svg>Start Your
+          Assessment</span>
+        <h2 id="cta-title">Ready to Test Your Knowledge?</h2>
+        <p>Explore our collection of structured practice tests and timed quizzes across science, technology,
+          mathematics, and humanities.</p>
+      </div>
+      <div class="cta-actions"><a class="primary-button" routerLink="/" fragment="quizzes-catalog"><svg lucideCompass
+            [size]="18" aria-hidden="true"></svg>Browse Available Quizzes</a><a class="secondary-button"
+          routerLink="/register"><svg lucideUserPlus [size]="18" aria-hidden="true"></svg>Create an Account</a></div>
+    </div>
+  </section>
+</main>
+<app-footer />

@@ -1,0 +1,49 @@
+@if (toastVisible()) {
+<div class="toast" role="status"><svg lucideCheck [size]="20" /><div><strong>Profile updated successfully</strong><span>Your changes have been saved.</span></div><button type="button" aria-label="Dismiss notification" (click)="toastVisible.set(false)"><svg lucideX [size]="18" /></button></div>
+}
+
+<main class="profile-page">
+  @if (loading()) {
+    <section class="profile-state card" role="status"><span class="spinner"></span><p>Loading your profile...</p></section>
+  } @else if (errorMessage() && !profile.fullName) {
+    <section class="profile-state card error-state" role="alert"><svg lucideCircleAlert [size]="38" /><h2>Profile unavailable</h2><p>{{ errorMessage() }}</p><button type="button" (click)="loadProfile()"><svg lucideRefreshCw [size]="17" />Try Again</button></section>
+  } @else {
+    <div class="page-heading">
+      <div><div class="breadcrumbs"><a routerLink="/user/dashboard">Study Portal</a><svg lucideChevronRight [size]="14" /><span>My Profile</span></div><h1>My Profile</h1><p>Manage your personal information and account details.</p></div>
+      <div class="mode-switch"><button type="button" [class.active]="!editMode()" (click)="cancelEdit()"><svg lucideEye [size]="16" />View Mode</button><button type="button" [class.active]="editMode()" (click)="enterEditMode()"><svg lucideEdit3 [size]="16" />Edit Mode</button></div>
+    </div>
+
+    @if (errorMessage()) {<div class="profile-error" role="alert"><svg lucideCircleAlert [size]="17" />{{ errorMessage() }}</div>}
+
+    <section class="profile-hero card">
+      <div class="ambient"></div>
+      <div class="avatar-wrap">
+        @if (profile.avatar) {<img [src]="profile.avatar" [alt]="profile.fullName">} @else {<span class="avatar-placeholder">{{ initials() }}</span>}
+      </div>
+      <div class="identity">
+        <div class="identity-heading"><div><h2>{{ profile.fullName }}</h2><p>&#64;{{ profile.username }}</p></div>@if (!editMode()) {<button class="soft-button" type="button" (click)="enterEditMode()"><svg lucideEdit3 [size]="18" />Edit Profile</button>}</div>
+        <div class="quick-stats"><div><span><svg lucideCalendarDays [size]="20" /></span><p><small>Joined</small><strong>{{ createdAt() | date:'MMM y' }}</strong></p></div><div><span><svg lucideCircleCheckBig [size]="20" /></span><p><small>Account</small><strong>Active</strong></p></div><div><span class="green"><svg lucideTrendingUp [size]="20" /></span><p><small>Role</small><strong>{{ roles().length ? roles().join(', ') : 'User' }}</strong></p></div></div>
+        <small class="avatar-note">You can set the avatar using an image URL in Edit Mode.</small>
+      </div>
+    </section>
+
+    <section class="card info-card">
+      <header><div class="section-title"><span><svg lucideBadge [size]="22" /></span><div><h2>Personal Information</h2><p>Update your registered profile information.</p></div></div>@if (!editMode()) {<button class="soft-button" type="button" (click)="enterEditMode()"><svg lucideEdit3 [size]="17" />Edit</button>}</header>
+      @if (!editMode()) {
+        <div class="info-grid"><div class="wide"><small>Full Name</small><strong>{{ profile.fullName }}</strong></div><div class="wide"><small>Email Address</small><strong>{{ profile.email }}</strong></div><div><small>Username</small><strong>&#64;{{ profile.username }}</strong></div><div><small>Phone Number</small><strong>{{ profile.phone || 'Not provided' }}</strong></div><div class="wide"><small>Date of Birth</small><strong>{{ profile.dateOfBirth ? (profile.dateOfBirth | date:'MMMM d, y') : 'Not provided' }}</strong></div></div>
+      } @else {
+        <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+          <div class="form-grid">
+            <label class="wide">Full Name<input name="fullName" required minlength="2" maxlength="100" [(ngModel)]="profile.fullName"></label>
+            <label class="wide">Email Address<input name="email" type="email" [value]="profile.email" disabled><small class="readonly-note">Email cannot be changed.</small></label>
+            <label>Username<span class="input-wrap username"><b>&#64;</b><input name="username" [value]="profile.username" disabled></span><small class="readonly-note">Username cannot be changed.</small></label>
+            <label>Phone Number<input name="phone" type="tel" [(ngModel)]="profile.phone"></label>
+            <label class="wide">Date of Birth<input name="dateOfBirth" type="date" [(ngModel)]="profile.dateOfBirth"></label>
+            <label class="wide">Avatar URL<input name="avatar" type="url" url placeholder="https://example.com/avatar.jpg" [(ngModel)]="profile.avatar"><small class="readonly-note">Leave empty to remove the current avatar.</small></label>
+          </div>
+          <footer><button type="button" class="cancel" [disabled]="saving()" (click)="cancelEdit()">Cancel</button><button type="submit" class="save" [disabled]="profileForm.invalid || saving()"><svg lucideSave [size]="18" />{{ saving() ? 'Saving...' : 'Save Changes' }}</button></footer>
+        </form>
+      }
+    </section>
+  }
+</main>

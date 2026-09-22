@@ -1,0 +1,129 @@
+<main>
+    <section class="welcome card">
+        <div>
+            <h1>Welcome back, <span>{{user()?.fullName ?? "User"}}!</span></h1>
+            <p>Track your active recall progress, resume unfinished sessions, and explore newly added academic assessments tailored to your curriculum.</p>
+        </div>
+        <div class="welcome-actions">
+            <a routerLink="/user/quizzes" class="primary">
+                <svg lucidePlayCircle [size]="20" aria-hidden="true"></svg> Take Quick Quiz
+            </a>
+            <a routerLink="/user/quizzes" class="secondary">
+                <svg lucideCompass [size]="20" aria-hidden="true"></svg> Explore Quizzes
+            </a>
+        </div>
+    </section>
+    <section class="metrics" aria-label="Learning summary">
+        <article class="metric card">
+            <div>
+                <small>Completed Quizzes</small>
+                <strong>{{ completedQuizzes() }} <em>tests</em></strong>
+                <p>Finish strong, you’ve got this!</p>
+            </div>
+            <span class="metric-icon">
+          <svg lucideCircleCheckBig [size]="26" aria-hidden="true"></svg>
+        </span>
+        </article>
+        <article class="metric card">
+            <div>
+                <small>Average Accuracy</small>
+                <strong>{{ averageScore() | number:'1.0-1' }}<em class="percent">%</em></strong>
+                <p>Stay focused, trust yourself!</p>
+            </div>
+            <span class="donut" [style.background]="'conic-gradient(#004ac6 0 ' + averageScorePercent() + '%, #d3e4fe ' + averageScorePercent() + '%)'" [attr.aria-label]="(averageScore() | number:'1.0-1') + ' percent'"></span>
+        </article>
+        <article class="metric card">
+            <div>
+                <small>Personal Record</small>
+                <strong>{{ bestScore() | number:'1.0-2' }}<em class="record">%</em></strong>
+                <p>{{ bestQuizTitle() }}</p>
+            </div>
+            <span class="metric-icon trophy">
+          <svg lucideTrophy [size]="26" aria-hidden="true"></svg>
+        </span>
+        </article>
+    </section>
+    <section class="dashboard-section">
+        <div class="section-heading">
+            <div>
+                <h2>Available Quizzes</h2>
+                <p>Recommended tests tailored to your learning path</p>
+            </div><a routerLink="/user/quizzes">View All Quizzes ({{ quizTotalItems() }})<svg lucideArrowRight [size]="18"
+            aria-hidden="true"></svg></a>
+        </div>
+        @if(quizzesLoading()) {
+        <div class="quiz-grid" aria-label="Loading available quizzes">
+            @for(item of [1,2,3]; track item) {
+            <app-quiz-card-skeleton /> }
+        </div>
+        } @else if(quizzes().length){
+        <div class="quiz-grid">
+            @for(quiz of quizzes(); track quiz.title){
+            <app-quiz-card [quiz]="quiz" />}
+        </div>
+        }@else{
+        <div class="empty card">
+            <span>
+          <svg lucideSearch [size]="36" aria-hidden="true"></svg>
+        </span>
+            <h3>Quizzes not found</h3>
+            <p>Try another topic or clear your search to see your recommendations.</p>
+            <button type="button" class="primary" (click)="search.set('')">Clear Search</button>
+        </div>}
+    </section>
+    <section class="dashboard-section" id="recent-attempts">
+        <div class="section-heading">
+            <div>
+                <h2>Recent Quiz Attempts</h2>
+                <p>Review your historical test performance and question breakdowns</p>
+            </div>
+        </div>
+        @if(attemptsLoading()) {
+        <div class="attempt-list" aria-label="Loading recent quiz attempts">
+            @for(item of [1,2,3,4]; track item) {
+            <app-quiz-attempt-skeleton /> }
+        </div>
+        } @else if(!showEmptyAttempts()){
+        <div class="attempt-list">
+            @for(attempt of attempts(); track attempt.id) {
+            <article class="attempt card">
+                <div class="attempt-main">
+                    <img class="attempt-image" [src]="attempt.quiz.image" [alt]="attempt.quiz.title" loading="lazy">
+                    <div>
+                        <h3>{{attempt.quiz.title}}</h3>
+                        <p>
+                            <span>
+                  <svg lucideHistory [size]="16" aria-hidden="true"></svg>
+                  Submitted {{ attempt.submittedAt | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+                            <i>•</i>
+                            <strong>{{ attempt.correctAnswers }} / {{ attempt.totalQuestions }} correct</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="attempt-result">
+                    <strong [class.review-score]="!attempt.isPassed">{{ attempt.score | number:'1.0-2' }}%</strong>
+                    <span class="status" [class.review]="!attempt.isPassed">
+              <svg lucideCheck [size]="14" aria-hidden="true"></svg>{{ attempt.isPassed ? 'Passed' : 'Failed' }}</span>
+                    <button type="button" [routerLink]="['/user/quizzes', attempt.quiz.id, 'results']"
+                      [queryParams]="{ attemptId: attempt.id }">
+              View Details
+              <svg lucideArrowRight [size]="16" aria-hidden="true"></svg>
+            </button>
+                </div>
+            </article>
+            }
+        </div>
+        }@else{
+        <div class="empty card">
+            <span>
+                <svg lucideCircleCheckBig [size]="40" aria-hidden="true"></svg>
+            </span>
+            <h3>No Quiz Attempts Yet</h3>
+            <p>You haven't completed any quizzes yet. Browse our curated academic catalog and test your knowledge!</p>
+            <a routerLink="/user/quizzes" class="primary">
+                <svg lucideSearch [size]="19" aria-hidden="true"></svg> Browse Available Quizzes
+            </a>
+        </div>}
+    </section>
+</main>

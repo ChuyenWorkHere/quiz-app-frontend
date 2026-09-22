@@ -1,0 +1,171 @@
+<main>
+    @if(apiError()){
+    <div class="toast error" role="alert">{{apiError()}}</div>} @if(saved()){
+    <div class="toast"><svg lucideCheckCircle2 [size]="20"></svg>Draft saved successfully.</div>}
+    <header class="page-head">
+        <div>
+            <nav><a routerLink="/admin/dashboard">Admin Portal</a><svg lucideChevronRight [size]="14"></svg><a routerLink="/admin/quizzes">Quiz Management</a><svg lucideChevronRight [size]="14"></svg><strong>{{ isEditMode() ? 'Edit Quiz' : 'Create New Quiz' }}</strong></nav>
+            <div class="title">
+                <h1>{{ pageHeading() }}</h1>
+            </div>
+            <p>Configure assessment parameters, curate vetted questions from the central item repository, and validate academic compliance prior to publishing.</p>
+        </div>
+        <div class="top-actions">
+            <button class="soft" routerLink="/admin/quizzes">
+                <svg lucideX [size]="18"></svg>Cancel</button>
+            <button class="draft" type="button" (click)="saveDraft()">
+                <svg lucideSave [size]="18"></svg>Save Draft</button>
+            <button class="publish" type="button" [disabled]="!isValid()" (click)="publish()">
+                @if(published()){
+                    <svg lucideCheck [size]="18"></svg>
+                }@else{
+                    <svg lucideRocket [size]="18"></svg>
+                }
+                {{ publishing() ? 'Saving...' : published() ? (isEditMode() ? 'Changes Saved!' : 'Published!') : primaryActionLabel() }}
+            </button>
+        </div>
+    </header>
+
+    <section class="steps" aria-label="Quiz creation steps">
+        @for(step of [{n:1,name:'General Information',help:'Metadata, duration & passing threshold'},{n:2,name:'Curriculum & Questions',help:'Item repository & point allocation'},{n:3,name:'Pre-flight Validation',help:'Compliance checks & publishing'}];track
+        step.n){
+        <button type="button" [class.active]="activeStep()===step.n" (click)="goToStep(step.n)"><b>{{step.n}}</b><span><small>Section {{step.n}}</small><strong>{{step.name}}</strong><em>{{step.help}}</em></span></button>}</section>
+
+    <section id="create-step-1" class="form-section">
+        <div class="section-head">
+            <h2><svg lucideSlidersHorizontal [size]="24"></svg>General Configuration</h2>
+        </div>
+        <div class="general-grid">
+            <div class="primary-column">
+                <article class="card fields">
+                    <label>
+                        <span>Quiz Title <i>*</i>
+                            <small>{{ title().length }} / 120</small>
+                        </span>
+                        <span class="input-wrap">
+                            <input maxlength="120" [class.invalid]="!title().trim()" [ngModel]="title()" (ngModelChange)="title.set($event)" placeholder="e.g. Distributed Computing and Microservices...">
+                            <svg lucideCheckCircle2 [size]="20"></svg>
+                        </span>
+                        @if(!title().trim()){
+                            <em class="error">Title is required. Please specify a descriptive name.</em>
+                        }
+                    </label>
+                    <label>
+                        <span>Assessment Description &amp; Instructions </span>
+                        <div class="editor">
+                        <textarea rows="4" [ngModel]="description()" (ngModelChange)="description.set($event)"></textarea>
+                    </div>
+                </label>
+                </article>
+                <article class="card metrics">
+                    <label>
+                        <span>Time Limit (Minutes) <i>*</i>
+                            <small class="good"><svg lucideTimer [size]="14"></svg>Standard Exam</small>
+                        </span>
+                        <div class="number">
+                            <input type="number" min="1" max="180" [class.invalid]="duration()<=0" [ngModel]="duration()" (ngModelChange)="duration.set(+$event)"><b>Minutes</b>
+                        </div>
+                        @if(duration()<=0){
+                            <em class="error">Duration must be a positive integer greater than 0.</em>
+                        }
+                        <p>Students will be auto-submitted once the countdown expires.</p>
+                    </label>
+                    <label>
+                        <span>Passing Threshold <small class="blue">{{threshold()}}% required</small></span>
+                        <div class="range">
+                            <input type="range" min="50" max="95" [ngModel]="threshold()" (ngModelChange)="threshold.set(+$event)">
+                            <b>{{threshold()}}%</b>
+                        </div>
+                        <p>Calculated at {{ totalPoints() * threshold() / 100 | number:'1.1-1' }} of {{totalPoints()}} points.</p>
+                    </label>
+                </article>
+            </div>
+            <aside class="side-column">
+                <article class="card">
+                    <h3>Release Status</h3>
+                    <label class="radio">
+                        <input type="radio" name="status" value="draft" [ngModel]="releaseStatus()" (ngModelChange)="releaseStatus.set($event)">
+                        <span><b>Draft</b><small>Only administrators can view and edit</small></span>
+                    </label>
+                    <label class="radio selected">
+                        <input type="radio" name="status" value="active" [ngModel]="releaseStatus()" (ngModelChange)="releaseStatus.set($event)">
+                        <span><b>Active / Published</b><small>Immediately accessible for assigned cohorts</small></span>
+                    </label>
+                </article>
+                <article class="card banner">
+                    <div>
+                        <h3>Quiz Banner &amp; Visual</h3><small>16:9 Ratio</small></div>
+                    @if(image()){
+                    <div class="banner-art" [style.background-image]="'url(' + image() + ')'" role="img" aria-label="Quiz banner preview"></div>} @else{
+                    <div class="banner-art"><svg lucideImage [size]="46"></svg><span>No banner selected</span></div>}
+                    <label class="file"><svg lucideCloudCheck [size]="20"></svg><span><b>Image URL</b><input type="url" [ngModel]="image()" (ngModelChange)="image.set($event)" placeholder="https://example.com/banner.jpg"></span></label>
+                </article>
+            </aside>
+        </div>
+    </section>
+
+    <section id="create-step-2" class="form-section">
+        <div class="section-head">
+            <h2><svg lucidePackageOpen [size]="24"></svg>Curriculum Item Selection</h2>
+            <div class="question-tools"><button class="create-question" type="button" routerLink="/admin/questions/new"><svg lucidePlus [size]="17"></svg>Create Question</button></div>
+        </div>
+        <div class="question-grid">
+            <article class="card repository">
+                <div class="card-head">
+                    <h3>Repository Questions <small>Showing {{filteredQuestions().length}} available</small></h3>
+                    <button type="button" (click)="resetFilters()"><svg lucideRefreshCw [size]="16"></svg>Reset Filters</button>
+                </div>
+                <label class="question-search">
+                    <svg lucideSearch [size]="19"></svg>
+                    <input [ngModel]="questionSearch()" (ngModelChange)="questionSearch.set($event)" placeholder="Filter questions by concept, topic, or keyword..."></label>
+                <div class="chips">@for(type of ['All Formats','Single Choice','Multiple Select','True / False'];track type){<button type="button" [class.active]="typeFilter()===type" (click)="typeFilter.set(type)">{{type}}</button>}</div>
+                <div class="repository-list">@for(question of filteredQuestions();track question.id){
+                    <div class="question">
+                        <div><span><b>{{question.type}}</b><small>{{question.points}} Points • ID: {{question.code}}</small></span>
+                            <p>{{question.text}}</p><em>Topics: {{question.topics}}</em></div>@if(isAssigned(question.id)){<span class="added"><svg lucideCheck [size]="16">
+
+                            </svg>Added</span> } @else{
+                        <button type="button" (click)="addQuestion(question)"><svg lucidePlus [size]="16"></svg>Add</button>}
+                    </div>
+                    }
+                </div>
+            </article>
+            <article class="card assigned">
+                <div class="assigned-head">
+                    <div>
+                        <h3>Assigned Assessment Items</h3><b>{{assigned().length}} Assigned • {{totalPoints()}} Total Points • {{duration()}} min</b></div><span><button title="Shuffle ordering" type="button"><svg lucideShuffle [size]="18"></svg></button><button type="button" (click)="clearQuestions()">Clear All</button></span></div>
+                <div class="requirement" [class.bad]="!assigned().length">@if(assigned().length){<svg lucideShieldCheck [size]="18"></svg>}@else{<svg lucideTriangleAlert [size]="18"></svg>}<strong>{{assigned().length ? 'Requirement Satisfied: '+assigned().length+' questions assigned (Min. 1)' : 'At least one question is required'}}</strong><span>{{assigned().length ? '100%' : '0%'}}</span></div>
+                <div class="assigned-list">@for(question of assigned();track question.id;let index=$index){
+                    <div><svg lucideGripVertical [size]="18"></svg><b>#{{index+1}}</b><span><strong>{{question.text}}</strong><small>{{question.type}} • {{question.points}} Point{{question.points>1?'s':''}} • {{question.difficulty}}</small></span><button type="button"
+                            title="Remove question" (click)="removeQuestion(question.id)"><svg lucideTrash2 [size]="17"></svg></button></div>}</div>
+                <footer><span>Point Total Balance</span><strong>{{totalPoints()}} PTS</strong></footer>
+            </article>
+        </div>
+    </section>
+
+    <section id="create-step-3" class="form-section review">
+        <div class="section-head">
+            <h2><svg lucideShieldCheck [size]="24"></svg>Final Verification &amp; Publishing</h2>
+        </div>
+        <article class="card summary">
+            <div class="summary-title">
+                <h3>{{title().trim()||'Untitled Quiz'}}</h3><button type="button" (click)="goToStep(1)"><svg lucideSlidersHorizontal [size]="16"></svg>Edit Metadata</button></div>
+            <div class="summary-metrics">
+                <div><span>Time Limit</span><strong>{{duration()}} Mins</strong><small>Timed Session</small></div>
+                <div><span>Assigned Questions</span><strong>{{assigned().length}} Items</strong><small>Balanced Difficulty</small></div>
+                <div><span>Total Points</span><strong>{{totalPoints()}} Pts</strong><small>{{assigned().length ? (totalPoints()/assigned().length | number:'1.1-1') : 0}} Pts Average</small></div>
+                <div><span>Passing Benchmark</span><strong>{{threshold()}}%</strong><small>{{totalPoints()*threshold()/100 | number:'1.1-1'}} Points Required</small></div>
+            </div>
+            <div class="manifest">
+                <header><strong>Assigned Question Manifest</strong><button type="button" (click)="goToStep(2)">Modify Questions ({{assigned().length}})</button></header>
+                <div>@for(question of assigned();track question.id;let index=$index){
+                    <p><span>{{index+1}}. {{question.text}}</span><b>{{question.points}} pt{{question.points>1?'s':''}}</b></p>}</div>
+            </div>
+        </article>
+    </section>
+
+    <footer class="action-dock">
+        <div><button routerLink="/admin/quizzes"><svg lucideArrowLeft [size]="18"></svg>Return to Quiz Catalog</button></div>
+        <div><button class="draft" type="button" (click)="saveDraft()"><svg lucideSave [size]="18"></svg>Save Draft</button><button class="publish" type="button" [disabled]="!isValid()" (click)="publish()"><svg lucideRocket [size]="18"></svg>{{ publishing() ? 'Saving...' : (isEditMode() ? 'Save Changes' : 'Publish Assessment') }}</button></div>
+    </footer>
+</main>

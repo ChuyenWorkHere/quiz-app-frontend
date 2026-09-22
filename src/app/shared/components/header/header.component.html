@@ -1,0 +1,37 @@
+<header>
+    <div class="header-content">
+        <a routerLink="/" class="brand" aria-label="QuizFlow home" (click)="menuOpen.set(false)">
+            <svg lucideMessageSquareCheck [size]="32" color="#2563eb" aria-hidden="true"></svg>
+            <span>QuizFlow</span>
+        </a>
+        @if (!registration()) {
+        <nav aria-label="Main navigation">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
+            <a routerLink="/quizzes" routerLinkActive="active" ariaCurrentWhenActive="page">Quizzes</a>
+            <a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page">About</a>
+            <a routerLink="/contact" routerLinkActive="active" ariaCurrentWhenActive="page">Contact</a>
+        </nav>
+        }
+        <div class="account-links">
+            @if (registration()) {
+            <span>Already have an account?</span>
+            <a routerLink="/login">Log in</a> } @else {
+            <a routerLink="/login" routerLinkActive="current" ariaCurrentWhenActive="page">Log in</a>
+            <a routerLink="/register" class="sign-up">Sign Up</a>
+            <button class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-controls="mobile-navigation" [attr.aria-expanded]="menuOpen()" (click)="menuOpen.set(!menuOpen())">
+              @if (menuOpen()) { 
+                <svg lucideX [size]="22" aria-hidden="true"></svg> 
+              } @else { 
+                <svg lucideMenu [size]="22" aria-hidden="true"></svg> }
+              </button> }
+        </div>
+    </div>
+    @if (menuOpen() && !registration()) {
+    <nav class="mobile-navigation" id="mobile-navigation" aria-label="Mobile navigation">
+        <a routerLink="/" (click)="menuOpen.set(false)">Home</a>
+        <a routerLink="/quizzes" (click)="menuOpen.set(false)">Quizzes</a>
+        <a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="menuOpen.set(false)">About</a>
+        <a routerLink="/contact" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="menuOpen.set(false)">Contact</a>
+    </nav>
+    }
+</header>

@@ -1,0 +1,61 @@
+.hero-actions a,
+.bottom-actions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 11px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.hero-actions a:hover,
+.bottom-actions a:hover {
+  background: #174fce;
+  box-shadow: 0 5px 14px rgb(37 99 235 / 24%);
+}
+
+.hero-actions a:active,
+.bottom-actions a:active {
+  transform: translateY(1px);
+}
+
+.hero-actions a:focus-visible,
+.bottom-actions a:focus-visible {
+  outline: 3px solid rgb(37 99 235 / 24%);
+  outline-offset: 2px;
+}
+
+.question-actions a {
+  display: grid;
+  padding: 5px;
+  border-radius: 7px;
+  color: #434655;
+  text-decoration: none;
+}
+
+.question-actions a:hover {
+  background: #dce9ff;
+  color: #004ac6;
+}
+
+.cover > div[role='img'] {
+  background-position: center;
+  background-size: cover;
+}
+
+@media (max-width: 650px) {
+  .hero-actions a,
+  .bottom-actions a {
+    width: 100%;
+  }
+}

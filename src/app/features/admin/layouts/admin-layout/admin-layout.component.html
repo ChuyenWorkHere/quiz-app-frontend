@@ -1,0 +1,5 @@
+<app-admin-sidebar [open]="sidebarOpen()" (closeMenu)="sidebarOpen.set(false)" />
+<div class="admin-shell">
+    <app-admin-header (openNavigation)="sidebarOpen.set(true)" />
+    <router-outlet />
+</div>

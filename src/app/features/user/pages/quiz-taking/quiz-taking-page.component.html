@@ -1,0 +1,66 @@
+@if (loading()) {
+  <main class="taking-page"><section class="page-state" role="status"><span class="spinner"></span><p>Loading your quiz...</p></section></main>
+} @else if (errorMessage()) {
+  <main class="taking-page"><section class="page-state error-state" role="alert"><svg lucideCircleAlert [size]="38" /><h1>Quiz unavailable</h1><p>{{ errorMessage() }}</p><div><a routerLink="/user/quizzes">Back to Quizzes</a><button type="button" (click)="loadSession()"><svg lucideRefreshCw [size]="17" />Try Again</button></div></section></main>
+} @else if (session(); as session) {
+<main class="taking-page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/user/dashboard"><svg lucideHouse [size]="14" />Study Portal</a><svg lucideChevronRight [size]="14" />
+    <a routerLink="/user/quizzes">Quizzes</a><svg lucideChevronRight [size]="14" />
+    <span>{{ session.quizTitle }}</span><svg lucideChevronRight [size]="14" />
+    <strong>Question {{ (currentIndex() + 1).toString().padStart(2, '0') }}</strong>
+  </nav>
+
+  <section class="session-bar">
+    <div class="session-title"><div><small>QUIZ IN PROGRESS</small><h1>{{ session.quizTitle }}</h1></div></div>
+    <div class="session-progress"><div><strong>Question {{ currentIndex() + 1 }} of {{ session.questions.length }}</strong><span>{{ answeredCount() }} answered</span></div><i><b [style.width.%]="((currentIndex() + 1) / session.questions.length) * 100"></b></i></div>
+    <div class="session-actions"><svg lucideClock3 [size]="20" /><div><small>TIME REMAINING</small><strong>{{ formattedTime }}</strong></div></div>
+    <button type="button" class="exit-button" (click)="dialog.set('cancel')"><svg lucideLogOut [size]="17" />Exit Quiz</button>
+  </section>
+
+  @if (submitError()) { <div class="submit-error" role="alert"><svg lucideCircleAlert [size]="17" />{{ submitError() }}</div> }
+
+  <div class="assessment-grid">
+    <section class="question-column">
+      @if (currentQuestion(); as question) {
+      <article class="question-card">
+        <header><div><span>Question {{ (currentIndex() + 1).toString().padStart(2, '0') }}</span><small>{{ questionTypeLabel() }}</small></div><button type="button" [class.flagged]="flagged().has(question.id)" (click)="toggleFlag()" aria-label="Flag question"><svg lucideFlag [size]="19" /></button></header>
+        <div class="question-body">
+          <span class="question-kind">{{ questionTypeLabel() }}</span>
+          <h1>{{ question.content }}</h1>
+          @if (question.image) { <img class="question-image" [src]="question.image" alt="Question illustration"> }
+          <p class="instruction">{{ question.questionType === QuestionType.MultipleSelect ? 'Select every answer that applies.' : 'Select one answer.' }}</p>
+          <div class="options" [class.single-options]="question.questionType !== QuestionType.MultipleSelect">
+            @for (option of question.answers; track option.id; let index = $index) {
+              <button type="button" [class.selected]="isSelected(option.id)" (click)="toggleOption(option.id)">
+                <span>@if (question.questionType === QuestionType.MultipleSelect && isSelected(option.id)) { ✓ } @else if (question.questionType !== QuestionType.MultipleSelect) { <i></i> } @else { {{ 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[index] }} }</span>
+                <strong>{{ option.text }}</strong>
+              </button>
+            }
+          </div>
+          <div class="answer-actions"><button type="button" (click)="clearAnswer()"><svg lucideEraser [size]="16" />Clear selection</button><button type="button" [class.active]="flagged().has(question.id)" (click)="toggleFlag()"><svg lucideBookmark [size]="16" />Mark for Review</button></div>
+        </div>
+        <footer><button type="button" [disabled]="currentIndex() === 0" (click)="goTo(currentIndex())"><svg lucideArrowLeft [size]="18" />Previous</button><button type="button" class="next" [disabled]="currentIndex() === session.questions.length - 1" (click)="goTo(currentIndex() + 2)">Next Question<svg lucideArrowRight [size]="18" /></button></footer>
+      </article>
+      }
+      <aside class="study-tip"><span><svg lucideInfo [size]="20" /></span><div><strong>Study tip</strong><p>Read every option before selecting your answer. Multiple-select questions require the complete set of correct answers.</p></div></aside>
+    </section>
+
+    <aside class="palette-card">
+      <header><div><small>QUIZ NAVIGATION</small><h2>Question Palette</h2></div><svg lucideBookmark [size]="20" /></header>
+      <div class="legend"><span><i class="answered"></i>Answered</span><span><i class="current"></i>Current</span><span><i class="review"></i>Review</span><span><i></i>Unanswered</span></div>
+      <div class="palette">@for (question of session.questions; track question.id; let index = $index) {<button type="button" [class.answered]="isAnswered(question.id)" [class.current]="currentIndex() === index" [class.review]="flagged().has(question.id)" (click)="goTo(index + 1)">{{ index + 1 }}@if (isAnswered(question.id) && currentIndex() !== index) {<svg lucideCheck [size]="11" />}</button>}</div>
+      <section class="completion"><div><span>Assessment progress</span><strong>{{ answeredCount() }}/{{ session.questions.length }}</strong></div><i><b [style.width.%]="(answeredCount() / session.questions.length) * 100"></b></i><p>{{ unanswered().length }} questions remaining</p></section>
+      <button type="button" class="submit-button" [disabled]="submitting()" (click)="dialog.set('submit')"><svg lucideSend [size]="17" />{{ submitting() ? 'Submitting...' : 'Submit Assessment' }}</button>
+      <p class="submit-note"><svg lucideCircleAlert [size]="14" />You can submit with unanswered questions.</p>
+    </aside>
+  </div>
+</main>
+
+@if (dialog()) {
+<div class="modal-backdrop" (click)="closeDialog()"><section class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()"><button type="button" class="modal-close" (click)="closeDialog()" aria-label="Close"><svg lucideX [size]="20" /></button><span class="modal-icon">@if (dialog() === 'cancel') {<svg lucideLogOut [size]="28" />} @else {<svg lucideSend [size]="28" />}</span>
+  @if (dialog() === 'cancel') {<h2>Exit this assessment?</h2><p>Your selected answers on this page are not saved. The countdown continues until this attempt expires.</p><div class="modal-actions"><button type="button" (click)="closeDialog()">Continue Quiz</button><button type="button" class="danger" (click)="exitQuiz()">Exit Quiz</button></div>}
+  @else {<h2>Submit your assessment?</h2>@if (unanswered().length) {<p>You still have <strong>{{ unanswered().length }} unanswered questions</strong>. You cannot change your answers after submission.</p><div class="unanswered-list"><span>Unanswered</span><div>@for (number of unanswered(); track number) {<button type="button" (click)="goTo(number); closeDialog()">{{ number }}</button>}</div></div>} @else {<p>You have answered all questions. You cannot change your answers after submission.</p>}<div class="modal-actions"><button type="button" (click)="closeDialog()">Review Answers</button><button type="button" class="confirm" [disabled]="submitting()" (click)="submitQuiz()">Submit Now</button></div>}
+</section></div>
+}
+}

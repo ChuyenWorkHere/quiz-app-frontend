@@ -1,0 +1,169 @@
+<app-header />
+<main class="contact-page">
+    <div class="halo"></div>
+    <section class="contact-hero container">
+        <div class="support-pill"><i></i>Academic Support &amp; Review</div>
+        <div class="page-heading">
+            <h1>Contact Us</h1>
+            <p>Have feedback on our quizzes, encountered an issue, or want to suggest new topics? We’d love to hear from
+                you. Send our academic team a message below.</p>
+        </div>
+        <div class="contact-layout">
+            <section class="form-column">
+                @if (sent()) {
+                <div class="success-card" role="status">
+                    <span class="success-icon">
+                        <svg lucideCircleCheck [size]="38" aria-hidden="true"></svg>
+                    </span>
+                    <h2>Thank you for your feedback!</h2>
+                    <p>Your message has been sent to our academic review team. We review submissions daily and typically
+                        respond within 24 - 48 Hours.</p>
+                    <div class="reference">
+                        <span>Reference
+                            ID:</span>
+                        <strong>QF-2026-9841</strong>
+                        <span>Status:</span>
+                        <b><i></i>Queued for Academic
+                            Review</b>
+                    </div>
+                    <div class="success-actions">
+                        <button type="button" (click)="sendAnother()">Send Another
+                            Message</button>
+                        <a routerLink="/" fragment="quizzes-catalog">Return to Quizzes
+                            <svg lucideArrowRight [size]="16" aria-hidden="true"></svg>
+                        </a>
+                    </div>
+                </div>}
+                @else {
+                <div class="form-card">@if (submitted() && form.invalid) {
+                    <div class="error-banner"><svg lucideInfo [size]="21" aria-hidden="true"></svg>
+                        <div>
+                            <strong>Unable to submit your feedback</strong>
+                            <p>Please ensure all required fields are correctly completed and try again.</p>
+                        </div>
+                    </div>}
+                    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+                        <div class="field-grid">
+                            <label>
+                                <span>Full Name <em>*</em></span>
+                                <input formControlName="fullName" placeholder="e.g. Eleanor Vance" />
+                                @if (submitted() && form.controls.fullName.invalid) {
+                                <small>Please enter your name.</small>
+                                }
+                            </label>
+                            <label>
+                                <span>Email Address <em>*</em></span>
+                                <input type="email" formControlName="email" placeholder="you@institution.edu" />
+                                @if (submitted() && form.controls.email.invalid) {
+                                <small>Please enter a valid email address.</small>}
+                            </label>
+                        </div>
+                        <label>
+                            <span> Subject &amp; Category <em>*</em></span>
+                            <span class="select-wrap">
+                                <select formControlName="category">
+                                    <option value="quiz-content">Quiz Content Feedback &amp; Review</option>
+                                    <option value="bug-question">Report a Question Error or Bug</option>
+                                    <option value="feature-suggestion">New Topic or Feature Suggestion</option>
+                                    <option value="academic-partnership">Educator &amp; Institutional Inquiry</option>
+                                    <option value="general">General Support</option>
+                                </select>
+                                <svg lucideChevronDown [size]="18" aria-hidden="true"></svg>
+                            </span>
+                            <small class="hint">Helps us route your message directly to the topic curriculum
+                                specialist.</small>
+                        </label>
+                        <label>
+                            <span> Message <em>*</em></span>
+                            <span class="counter">{{form.controls.message.value.length }} / 1000 characters</span>
+                            <textarea formControlName="message" maxlength="1000" rows="6"
+                                placeholder="Describe your inquiry, the specific quiz ID, or topic recommendation in detail..."></textarea>
+                            @if(submitted() && form.controls.message.invalid) {
+                            <small>Message cannot be empty.</small>
+                            }
+                        </label>
+                        <div class="tip">
+                            <svg lucideLightbulb [size]="20" aria-hidden="true"></svg>
+                            <p>
+                                <strong>Pro tip:</strong>
+                                If referring to an active question, note the question number or
+                                share the URL so our subject matter experts can verify sources faster.
+                            </p>
+                        </div>
+                        <div class="form-action">
+                            <span>
+                                <svg lucideShieldCheck [size]="18" aria-hidden="true"></svg>
+                                Your feedback is confidential and ad-free.</span>
+                            <button class="primary-button" type="submit">
+                                Send Feedback
+                                <svg lucideSend [size]="18" aria-hidden="true"></svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>}
+            </section>
+            <aside class="support-column">
+                <article class="support-card">
+                    <div class="support-title">
+                        <span class="support-icon">
+                            <svg lucideClock3 [size]="20" aria-hidden="true">
+                            </svg>
+                        </span>
+                        <div>
+                            <small>TURNAROUND SLA</small>
+                            <h2>&lt; 24 - 48 Hours</h2>
+                        </div>
+                    </div>
+                    <p>Every content correction or question challenge is thoroughly audited by certified domain
+                        educators before publication.</p>
+                    <strong class="verified">
+                        <svg lucideCircleCheck [size]="16" aria-hidden="true">
+                        </svg>100% Academic Integrity Verified
+                    </strong>
+                </article>
+                <article class="support-card">
+                    <h2>Direct Channels</h2>
+                    <a href="mailto:feedback@quizflow.edu">
+                        <span>
+                            <svg lucideMailCheck [size]="18" aria-hidden="true"></svg>
+                        </span>
+                        <b>Curriculum
+                            Review
+                            <small>feedback@quizflow.edu</small>
+                        </b>
+                    </a>
+
+                    <a href="mailto:support@quizflow.edu">
+                        <span>
+                            <svg lucideLifeBuoy [size]="18" aria-hidden="true"></svg>
+                        </span>
+                        <b>Technical
+                            Helpdesk
+                            <small>support@quizflow.edu</small>
+                        </b>
+                    </a>
+                    <a href="mailto:educators@quizflow.edu">
+                        <span>
+                            <svg lucideSchool [size]="18" aria-hidden="true">
+                            </svg>
+                        </span>
+                        <b>Institution Leads<small>educators@quizflow.edu</small></b>
+                    </a>
+                </article>
+                <article class="guide-card">
+                    <span>Self-Service</span>
+                    <svg lucideBookOpen [size]="28" aria-hidden="true">
+                    </svg>
+                    <h2>Have an immediate query?</h2>
+                    <p>Explore common testing rules, scoring rubrics, and active recall methodologies in our
+                        knowledgebase.</p>
+                    <a routerLink="/about">Check Quiz Guides &amp; FAQs
+                        <svg lucideArrowRight [size]="16" aria-hidden="true">
+                        </svg>
+                    </a>
+                </article>
+            </aside>
+        </div>
+    </section>
+</main>
+<app-footer />

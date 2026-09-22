@@ -1,0 +1,154 @@
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.pulse-card {
+    padding: 28px;
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 20px 30px -10px rgb(15 23 42 / .16);
+}
+
+.pulse-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 16px;
+    background: #f6f8ff;
+}
+
+.brain-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    flex-shrink: 0;
+}
+
+h2 {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+.pulse-heading p {
+    font-size: 11px;
+    color: #434655;
+}
+
+.mastery {
+    background: #d4ffeb;
+    color: #006242;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.metrics {
+    display: grid;
+    gap: 20px;
+}
+
+.metric-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.metric-label strong {
+    color: #004ac6;
+}
+
+.muted {
+    color: #434655;
+    font-weight: 400;
+}
+
+.muted strong {
+    color: #737686;
+}
+
+.track {
+    height: 10px;
+    border-radius: 99px;
+    background: #e5eeff;
+    overflow: hidden;
+}
+
+.track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+}
+
+.active-bar {
+    width: 92%;
+    background: #2563eb;
+}
+
+.passive-bar {
+    width: 34%;
+    background: #c3c6d7;
+}
+
+.study-image {
+    margin-top: 24px;
+    height: 192px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: #e5eeff;
+}
+
+.study-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.study-image>div {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 16px;
+    background: linear-gradient(transparent 35%, rgb(33 49 69 / .8));
+    color: #eaf1ff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.study-image svg {
+    color: #6ffbbe;
+    flex-shrink: 0;
+}
+
+figcaption {
+    margin-top: 14px;
+    font-size: 10px;
+    line-height: 16px;
+    color: #737686;
+}
+
+@media(max-width: 600px) {
+    .pulse-card {
+        padding: 20px;
+    }
+
+    .metric-label {
+        font-size: 11px;
+    }
+}

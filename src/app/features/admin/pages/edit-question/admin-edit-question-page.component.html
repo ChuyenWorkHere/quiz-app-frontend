@@ -1,0 +1,8 @@
+@if (loading()) {
+  <div class="state" role="status">Loading question...</div>
+} @else if (question(); as formValue) {
+  @if (errorMessage()) { <div class="state error" role="alert">{{ errorMessage() }}</div> }
+  <app-question-form mode="edit" [questionId]="questionId.toString()" [initialValue]="formValue" (cancelForm)="goBack()" (submitForm)="handleSubmit($event)" />
+} @else {
+  <div class="state error" role="alert">{{ errorMessage() }}</div>
+}

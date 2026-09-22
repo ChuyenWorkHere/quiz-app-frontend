@@ -1,0 +1,101 @@
+<main class="users-page">
+    <header class="page-head">
+        <div>
+            <nav><span>Admin Portal</span><svg lucideChevronRight></svg><strong>User Management</strong></nav>
+            <h1>User Management</h1>
+            <p>Manage accounts, roles, access status and quiz participation.</p>
+        </div>
+        <aside><button class="primary" (click)="createOpen.set(true)"><svg lucideUserPlus></svg>Add User</button></aside>
+    </header>
+
+    @if(notice()){
+    <div class="notice"><svg lucideShieldCheck></svg>{{notice()}}<button (click)="notice.set('')"><svg lucideX></svg></button></div>} @if(errorMessage()){
+    <section class="sync-error"><svg lucideRefreshCw></svg>
+        <div>
+            <h2>Request failed</h2>
+            <p>{{errorMessage()}}</p>
+        </div><button (click)="loadUsers()">Try Again</button></section>}
+
+    <section class="toolbar">
+        <label><svg lucideSearch></svg><input [ngModel]="search()" (ngModelChange)="searchChanged($event)" placeholder="Search by name, username or email..."></label>
+        <select [ngModel]="role()" (ngModelChange)="role.set($event);filtersChanged()"><option value="all">All Roles</option><option value="Admin">Administrator</option><option value="User">User</option></select>
+        <select [ngModel]="status()" (ngModelChange)="status.set($event === 'all' ? 'all' : +$event);filtersChanged()"><option value="all">All Statuses</option><option [value]="UserStatus.Active">Active</option><option [value]="UserStatus.Locked">Locked</option></select>
+    </section>
+
+    @if(loading()){
+    <section class="skeleton"><i></i>@for(row of [1,2,3,4,5,6];track row){
+        <div></div>}</section>
+    }@else if(users().length){
+    <section class="table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Role</th>
+                        <th>Attempts</th>
+                        <th>Average Score</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>@for(user of users();track user.id){
+                    <tr [class.locked]="user.status===UserStatus.Locked">
+                        <td>
+                            <div class="identity"><i>{{initials(user)}}</i><span><b>{{user.fullName}}</b><small>&#64;{{user.username}}</small></span></div>
+                        </td>
+                        <td><span class="email">{{user.email}}<svg lucideShieldCheck></svg></span></td>
+                        <td><span class="status" [class.active]="user.status===UserStatus.Active" [class.locked]="user.status===UserStatus.Locked"><i></i>{{user.status===UserStatus.Active?'Active':'Locked'}}</span></td>
+                        <td><span class="role">{{roleName(user)}}</span></td>
+                        <td>{{user.attempts}}</td>
+                        <td>{{user.averageScore | number:'1.0-1'}}%</td>
+                        <td>
+                            <div class="actions"><button [routerLink]="['/admin/users',user.id]" title="View details"><svg lucideEye [size]="19"></svg></button><button (click)="statusTarget.set(user)" [title]="user.status===UserStatus.Active?'Lock user':'Unlock user'"><svg lucideLockKeyhole [size]="19"></svg></button></div>
+                        </td>
+                    </tr>}</tbody>
+            </table>
+        </div>
+        <footer><span>Showing <b>{{fromItem()}}-{{toItem()}}</b> of <b>{{totalItems()}}</b> users</span>
+            <nav><button [disabled]="page()<=1" (click)="loadUsers(page()-1)">Prev</button><span>Page {{page()}} of {{totalPages() || 1}}</span><button [disabled]="page()>=totalPages()" (click)="loadUsers(page()+1)">Next</button></nav>
+        </footer>
+    </section>
+    }@else{
+    <section class="empty"><i><svg lucideUsersRound></svg></i>
+        <h2>No matching users found</h2>
+        <p>Try another keyword or reset the filters.</p>
+        <div><button (click)="resetFilters()">Reset Filters</button><button class="primary" (click)="createOpen.set(true)"><svg lucidePlus></svg>Add User</button></div>
+    </section>
+    } @if(statusTarget()){
+
+    <div class="overlay" (click)="statusTarget.set(null)">
+        <section class="modal" (click)="$event.stopPropagation()">
+            <header><i><svg lucideLockKeyhole></svg></i>
+                <div>
+                    <h2>{{statusTarget()?.status===UserStatus.Active?'Lock':'Unlock'}} User Account</h2>
+                    <p>{{statusTarget()?.fullName}} (&#64;{{statusTarget()?.username}})</p>
+                </div>
+            </header>
+            <aside><b><svg lucideInfo></svg>Account access</b>
+                <p>{{statusTarget()?.status===UserStatus.Active?'The user will immediately lose access and their existing token will be rejected.':'The user will be allowed to sign in again.'}}</p>
+            </aside>
+            <footer><button (click)="statusTarget.set(null)">Cancel</button><button class="danger" [disabled]="saving()" (click)="toggleStatus()">{{saving()?'Saving...':'Confirm'}}</button></footer>
+        </section>
+    </div>} @if(createOpen()){
+
+    <div class="overlay" (click)="createOpen.set(false)">
+        <section class="modal invite" (click)="$event.stopPropagation()">
+            <header><i><svg lucideUserPlus></svg></i>
+                <div>
+                    <h2>Add New User</h2>
+                    <p>Create an active account with a temporary password.</p>
+                </div><button (click)="createOpen.set(false)"><svg lucideX></svg></button></header>
+            <label>Full Name<input [ngModel]="createForm().fullName" (ngModelChange)="updateCreateField('fullName',$event)" placeholder="Nguyen Van A"></label>
+            <label>Username<input [ngModel]="createForm().username" (ngModelChange)="updateCreateField('username',$event)" placeholder="nguyenvana"></label>
+            <label>Email<input type="email" [ngModel]="createForm().email" (ngModelChange)="updateCreateField('email',$event)" placeholder="user@example.com"></label>
+            <label>Temporary Password<input type="password" [ngModel]="createForm().password" (ngModelChange)="updateCreateField('password',$event)" placeholder="At least 6 characters"></label>
+            <label>Role<select [ngModel]="createForm().role" (ngModelChange)="updateCreateField('role',$event)"><option value="User">User</option><option value="Admin">Administrator</option></select></label>
+            <footer><button (click)="createOpen.set(false)">Cancel</button><button class="primary" [disabled]="saving()" (click)="createUser()">{{saving()?'Creating...':'Create User'}}</button></footer>
+        </section>
+    </div>}
+</main>

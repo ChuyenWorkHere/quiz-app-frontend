@@ -1,0 +1,23 @@
+<section class="preview" aria-labelledby="preview-heading">
+  <div class="preview-top"><span class="eyebrow"><i></i>Assessment Preview</span><span class="timer"><svg lucideTimer
+        [size]="14" aria-hidden="true"></svg>14:28 Remaining</span></div>
+  <div class="question"><span>Question 12 of 20</span>
+    <h2 id="preview-heading">What is the average time complexity of searching in a balanced Binary Search Tree?</h2>
+  </div>
+  <div class="answers" role="group" aria-label="Try a sample answer">
+    @for (answer of answers; track answer.key) {
+    <button type="button" [class.selected]="selectedAnswer() === answer.key"
+      [attr.aria-pressed]="selectedAnswer() === answer.key" (click)="selectedAnswer.set(answer.key)"><span
+        class="answer-key">{{ answer.key }}</span><span>{{ answer.value }}</span>@if (selectedAnswer() === answer.key) {
+      <svg lucideCircleCheck [size]="18" aria-hidden="true"></svg> }</button>
+    }
+  </div>
+  <div class="preview-bottom" aria-live="polite">
+    <div class="mastery"><span class="progress-ring" aria-hidden="true"></span>
+      <div><strong>{{ selectedAnswer() === 'B' ? '88% Mastery' : 'Keep practicing' }}</strong>
+        <p>{{ selectedAnswer() === 'B' ? 'Concept verified' : 'Each step halves the search.' }}</p>
+      </div>
+    </div><span class="recall-mode">Active Recall Mode <svg lucideBadgeCheck [size]="16"
+        aria-hidden="true"></svg></span>
+  </div>
+</section>

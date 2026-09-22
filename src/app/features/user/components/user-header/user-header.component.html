@@ -1,0 +1,46 @@
+<header (click)="closePopovers()">
+    <button class="menu-button" type="button" aria-label="Open navigation" (click)="$event.stopPropagation(); openNavigation.emit()"><svg lucideMenu [size]="22" aria-hidden="true"></svg></button>
+    <label class="search"><svg lucideSearch [size]="19" aria-hidden="true"></svg><input type="search" placeholder="Search quizzes, topics..." aria-label="Search user portal" [value]="search()" (input)="search.set($any($event.target).value)"></label>
+    <div class="account">
+        <div class="popover-wrap"><button class="icon-button" type="button" aria-label="Notifications" [attr.aria-expanded]="notificationsOpen()" (click)="$event.stopPropagation(); notificationsOpen.set(!notificationsOpen()); profileOpen.set(false)"><svg lucideBell [size]="21" aria-hidden="true"></svg><i></i></button>@if(notificationsOpen()){
+            <div class="notifications" (click)="$event.stopPropagation()"><strong>Notifications</strong>
+                <p>You are all caught up.</p>
+            </div>}</div>
+        <div class="popover-wrap">
+            <button class="profile-button" type="button" [attr.aria-expanded]="profileOpen()" (click)="$event.stopPropagation(); profileOpen.set(!profileOpen()); notificationsOpen.set(false)">
+                <span class="profile-copy">
+                    <strong>{{ user()?.fullName ?? 'QuizFlow User' }}</strong>
+                    <small>{{ user()?.roles?.join(', ') ?? 'User' }}</small>
+                </span>
+                <span class="avatar">
+                    @if (user()?.avatar && failedAvatarUrl() !== user()?.avatar) {
+                      <img [src]="user()?.avatar" [alt]="user()?.fullName ?? 'User avatar'" (error)="failedAvatarUrl.set(user()?.avatar ?? '')">
+                    } @else {
+                      <b>{{ initials() }}</b>
+                    }
+                </span>
+                <svg lucideChevronDown [size]="17" aria-hidden="true"></svg>
+            </button> @if(profileOpen()) {
+            <div class="profile-menu" (click)="$event.stopPropagation()">
+                <div class="profile-summary">
+                    <strong>{{ user()?.fullName ?? 'QuizFlow User' }}</strong>
+                    <small>{{ user()?.email }}</small>
+                </div>
+                <hr>
+                <a routerLink="/user/profile">
+                    <svg lucideUserRound [size]="18" aria-hidden="true"></svg> Profile
+                </a>
+                <button type="button">
+                    <svg lucideSettings [size]="18" aria-hidden="true"></svg>
+                    Settings
+                </button>
+                <hr>
+                <button type="button" class="logout" (click)="signOut()">
+                    <svg lucideLogOut [size]="18" aria-hidden="true"></svg>
+                    Log Out
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+</header>

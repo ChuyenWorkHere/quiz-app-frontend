@@ -1,0 +1,74 @@
+<main>
+    <section class="intro">
+        <h1>System Overview</h1>
+        <p>Monitor assessments, question bank volume, candidate activity, and platform health.</p>
+    </section>
+
+    <section class="metrics" aria-label="Platform statistics">
+        <article class="metric">
+            <div class="metric-head">
+                <div><span class="label">Total Quizzes</span><strong>{{ loading() ? '—' : totalQuizzes() }}</strong></div><span class="metric-icon blue"><svg lucideFileText [size]="24"></svg></span></div>
+            <div class="metric-foot"><span class="positive"><svg lucideTrendingUp [size]="16"></svg>Live catalog</span><span>All statuses</span></div>
+        </article>
+        <article class="metric">
+            <div class="metric-head">
+                <div><span class="label">Active Quizzes</span><strong>{{ loading() ? '—' : activeQuizzes() }}</strong></div><span class="metric-icon green"><svg lucidePlay [size]="24"></svg></span></div>
+            <div class="metric-foot"><span class="positive"><i></i>{{ totalQuizzes() ? ((activeQuizzes() / totalQuizzes()) * 100).toFixed(1) : '0.0' }}% active rate</span><span>{{ inactiveQuizzes() }} inactive</span></div>
+        </article>
+        <article class="metric">
+            <div class="metric-head">
+                <div><span class="label">Total Questions</span><strong>{{ loading() ? '—' : totalQuestions() }}</strong></div><span class="metric-icon cyan"><svg lucideDatabase [size]="24"></svg></span></div>
+            <div class="metric-foot"><span class="secondary"><svg lucideCheckCircle2 [size]="16"></svg>Across all quizzes</span><span>Live data</span></div>
+        </article>
+        <article class="metric">
+            <div class="metric-head">
+                <div><span class="label">Total Users</span><strong>{{ usersLoading() || usersLoadError() ? '—' : totalUsers() }}</strong></div><span class="metric-icon blue"><svg lucideBadge [size]="24"></svg></span></div>
+            <div class="metric-foot">@if(usersLoadError()){<button type="button" (click)="loadUsers()"><svg lucideRefreshCw [size]="16"></svg>Try again</button>}@else{<span class="primary"><svg lucideUserPlus [size]="16"></svg>{{activeUsers()}} active</span><span>{{adminUsers()}} admins</span>}</div>
+        </article>
+    </section>
+
+    <section class="recent">
+        <div class="recent-title">
+            <div>
+                <h2>Recent Quizzes</h2><span>{{ recentQuizzes().length }} of {{ totalQuizzes() }}</span></div><a routerLink="/admin/quizzes">View All ({{ totalQuizzes() }})<svg lucideArrowRight [size]="16"></svg></a></div>
+        @if (loading()) {
+        <div class="dashboard-state" role="status">Loading quizzes...</div>
+        } @else if (loadError()) {
+        <div class="empty" role="alert">
+            <span><svg lucideAlertTriangle [size]="40"></svg></span>
+            <h2>Unable to load quizzes</h2>
+            <p>The recent quiz list could not be loaded.</p>
+            <button class="primary" type="button" (click)="loadQuizzes()"><svg lucideRefreshCw [size]="18"></svg>Try Again</button></div>
+        } @else {
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Details</th>
+                        <th>Params</th>
+                        <th>Status</th>
+                        <th>Throughput</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>@for (quiz of recentQuizzes(); track quiz.id) {
+                    <tr>
+                        <td>
+                            <div class="assessment"><span class="quiz-icon blue"><svg lucideDatabase [size]="18"></svg></span><span><strong>{{ quiz.title }} <em>#{{ quiz.id }}</em></strong><small>Updated {{ quiz.updatedAt | date:'medium' }}</small></span></div>
+                        </td>
+                        <td><b>{{ quiz.numberOfQuestions }} Qs</b> / {{ quiz.duration }}m</td>
+                        <td><span class="status" [class.active]="quiz.isActive" [class.draft]="!quiz.isActive"><i></i>{{ quiz.isActive ? 'Active' : 'Inactive' }}</span></td>
+                        <td><b>{{ quiz.attempts }}</b> attempts</td>
+                        <td>
+                            <div class="actions"><a [routerLink]="['/admin/quizzes', quiz.id, 'edit']" title="Edit quiz"><svg lucidePencil [size]="17"></svg></a><a [routerLink]="['/admin/quizzes', quiz.id]" title="View details"><svg lucideExternalLink [size]="17"></svg></a></div>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5">No quizzes found.</td>
+                    </tr> }</tbody>
+            </table>
+        </div>
+        }
+    </section>
+</main>

@@ -1,0 +1,88 @@
+<main class="create-question">
+    <header class="page-header">
+        <div>
+            <nav><a routerLink="/admin/questions">Admin Portal</a><svg lucideChevronRight></svg><a routerLink="/admin/questions">Question Bank</a><svg lucideChevronRight></svg><strong>{{pageTitle()}}</strong></nav>
+            <h1>{{pageTitle()}}</h1>
+            <p>{{mode()==='edit'?'Update the question content, answer criteria, and student feedback.':'Author curriculum questions, configure scoring rules, specify answer criteria, and set taxonomy tags.'}}</p>
+        </div>
+        <div class="header-actions">
+            <button type="button" (click)="cancel()"><svg lucideX></svg>Cancel</button>
+            <button type="button" class="primary" (click)="save('finish')"><svg lucideCheckCircle2></svg>{{mode()==='edit'?'Save Changes':'Save Question'}}</button>
+        </div>
+    </header>
+
+    @if(message()) {
+    <div class="notice" [class.error]="messageKind()==='error'">@if(messageKind()==='error'){<svg lucideInfo></svg>}@else{<svg lucideCheckCircle2></svg>}{{message()}}</div> }
+
+    <section class="form-card">
+        <header class="section-head"><span><svg lucideListChecks></svg></span>
+            <div>
+                <h2>1. Quiz Assignment &amp; Difficulty</h2>
+                <p>Choose which quiz owns this question</p>
+            </div>
+        </header>
+        <div class="assignment-grid">
+            <label>Quiz (optional)<select [ngModel]="quizId()" (ngModelChange)="quizId.set($event);message.set('')" [disabled]="quizzesLoading()"><option [ngValue]="null">{{quizzesLoading()?'Loading quizzes...':'No quiz'}}</option>@for(quiz of quizzes();track quiz.id){<option [ngValue]="quiz.id">{{quiz.title}}</option>}</select></label>
+            <label>Difficulty<select [ngModel]="level()" (ngModelChange)="level.set(+$event)"><option [ngValue]="2">Easy</option><option [ngValue]="1">Medium</option><option [ngValue]="0">Hard</option></select></label>
+            <label>Image URL<input type="url" [ngModel]="image()" (ngModelChange)="image.set($event)" placeholder="https://example.com/question-image.jpg"></label>
+        </div>
+    </section>
+
+    <section class="form-card">
+        <header class="section-head"><span><svg lucideListChecks></svg></span>
+            <div>
+                <h2>2. Question Format</h2>
+                <p>Select the cognitive assessment pattern for this challenge</p>
+            </div><small>Type: {{questionType()==='single'?'Single Choice':questionType()==='multiple'?'Multiple Select':'True / False'}} Active</small></header>
+        <div class="type-grid">
+            <button type="button" [class.active]="questionType()==='single'" (click)="selectType('single')"><span><svg lucideCheckCircle2></svg>@if(questionType()==='single'){<svg lucideCheckCircle2></svg>}</span><strong>Single Choice</strong><small>One strictly correct option</small></button>
+            <button type="button" [class.active]="questionType()==='multiple'" (click)="selectType('multiple')"><span><svg lucideListChecks></svg>@if(questionType()==='multiple'){<svg lucideCheckCircle2></svg>}</span><strong>Multiple Select</strong><small>Multi-select with several answers</small></button>
+            <button type="button" [class.active]="questionType()==='boolean'" (click)="selectType('boolean')"><span><svg lucideCheckCircle2></svg>@if(questionType()==='boolean'){<svg lucideCheckCircle2></svg>}</span><strong>True / False</strong><small>Binary factual assertion</small></button>
+        </div>
+    </section>
+
+    <section class="form-card">
+        <header class="section-head"><span><svg lucideListChecks></svg></span>
+            <div>
+                <h2>3. Question Prompt &amp; Stem</h2>
+                <p>Frame the primary challenge scenario, formula, or inquiry</p>
+            </div>
+        </header>
+        <textarea rows="6" [ngModel]="prompt()" (ngModelChange)="prompt.set($event);message.set('')" placeholder="Write the question prompt here..."></textarea>
+        <footer class="field-meta"><span><svg lucideInfo></svg>Keep the prompt focused on one learning objective.</span><b>{{wordCount()}} words • {{prompt().length}} chars</b></footer>
+    </section>
+
+    <section class="form-card">
+        <header class="section-head answers-head"><span><svg lucideCheckCircle2></svg></span>
+            <div>
+                <h2>4. Answer Configuration &amp; Grading Rules</h2>
+                <p>Specify choices, mark valid keys, and configure target feedback</p>
+            </div>@if(questionType()!=='boolean'){<label class="shuffle"><input type="checkbox" [ngModel]="shuffle()" (ngModelChange)="shuffle.set($event)"> Shuffle Choices</label>}</header>
+        <div class="info"><svg lucideInfo></svg><span>{{questionType()==='single'?'Select the correct radio button to designate the strictly correct choice.':questionType()==='multiple'?'Select every valid answer. At least one correct choice is required.':'Select whether TRUE or FALSE is the correct resolution.'}}</span></div>
+        @if(questionType()!=='boolean') {
+        <div class="option-list">
+            @for(option of options(); track option.id; let index=$index) {
+            <article class="option" [class.correct]="option.correct">
+                <button class="selector" [class.multiple]="questionType()==='multiple'" type="button" (click)="toggleCorrect(option.id)">@if(option.correct){
+                    <svg lucideCheck></svg>}
+                </button>
+                <b>{{optionLabel(index)}}</b>
+                <div><input [ngModel]="option.text" (ngModelChange)="updateOption(option.id,'text',$event);message.set('')" [placeholder]="'Enter answer option '+optionLabel(index)"><label><svg lucideInfo></svg><input [ngModel]="option.feedback" (ngModelChange)="updateOption(option.id,'feedback',$event)" placeholder="Add feedback for this answer (optional)..."></label></div>
+                <small [class.good]="option.correct">{{option.correct?'Correct Answer':'Incorrect'}}</small>
+                <button class="delete" type="button" (click)="removeOption(option.id)" [disabled]="options().length<=2"><svg lucideTrash2></svg></button>
+            </article>
+            }
+            <button class="add-option" type="button" (click)="addOption()"><svg lucidePlusCircle></svg>Add Option {{optionLabel(options().length)}}</button>
+        </div>
+        } @else {
+        <div class="boolean-grid">
+            <button type="button" [class.active]="booleanAnswer()" (click)="booleanAnswer.set(true)"><i><svg lucideCheck></svg></i><strong>TRUE</strong><small>{{booleanAnswer()?'Designated as Correct Answer':'Incorrect Answer'}}</small></button>
+            <button type="button" [class.active]="!booleanAnswer()" (click)="booleanAnswer.set(false)"><i><svg lucideX></svg></i><strong>FALSE</strong><small>{{!booleanAnswer()?'Designated as Correct Answer':'Incorrect Answer'}}</small></button>
+        </div>
+        }
+    </section>
+    <footer class="sticky-actions">
+        <div><i></i><span>Required fields are validated before saving</span><em>•</em><span>Question: <b>{{questionId()}}</b></span></div>
+        <nav><button type="button" (click)="cancel()">Cancel</button><button class="primary" type="button" (click)="save('finish')"><svg lucideCheckCircle2></svg>{{mode()==='edit'?'Save Changes & Finish':'Save to Question Bank & Finish'}}</button></nav>
+    </footer>
+</main>

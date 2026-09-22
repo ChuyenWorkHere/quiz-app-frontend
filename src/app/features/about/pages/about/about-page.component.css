@@ -1,0 +1,283 @@
+:host {
+    display: block;
+    background: #f8f9ff;
+    color: #0b1c30;
+}
+
+.container {
+    max-width: 1280px;
+    padding-inline: 48px;
+    margin-inline: auto;
+}
+
+.breadcrumb {
+    padding-block: 16px;
+    background: #f2f6ff;
+    font-size: 14px;
+}
+
+.breadcrumb .container,
+.breadcrumb a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb a {
+    color: #434655;
+}
+
+.breadcrumb [aria-current] {
+    color: #004ac6;
+    font-weight: 600;
+}
+
+.breadcrumb a+span {
+    color: #c3c6d7;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 48px 64px;
+    isolation: isolate;
+}
+
+.hero::before,
+.hero::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    filter: blur(64px);
+    pointer-events: none;
+}
+
+.hero::before {
+    top: -96px;
+    right: 40px;
+    background: rgb(0 74 198 / .05);
+}
+
+.hero::after {
+    bottom: 0;
+    left: -80px;
+    background: rgb(57 184 253 / .1);
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    align-items: center;
+    gap: 48px;
+}
+
+.hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    width: fit-content;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #dbe1ff;
+    color: #003ea8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+h1 {
+    font: 800 48px/56px 'Plus Jakarta Sans', Inter, sans-serif;
+    letter-spacing: -.03em;
+}
+
+h1 span {
+    color: #004ac6;
+}
+
+.intro {
+    color: #434655;
+    font-size: 18px;
+    line-height: 29px;
+}
+
+.feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.feature-pills li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 99px;
+    background: white;
+    box-shadow: 0 1px 3px rgb(0 0 0 / .06);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cta-section {
+    padding-block: 64px;
+}
+
+.cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 48px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 100% 0, #eff4ff, transparent 45%), white;
+    box-shadow: 0 4px 8px rgb(15 23 42 / .06);
+}
+
+.cta-copy {
+    max-width: 560px;
+}
+
+.cta-copy .pill {
+    background: #c9e6ff;
+    color: #001e2f;
+}
+
+h2 {
+    font: 700 32px/40px 'Plus Jakarta Sans', Inter, sans-serif;
+    letter-spacing: -.02em;
+    margin: 12px 0;
+}
+
+.cta-copy p {
+    color: #434655;
+    line-height: 24px;
+}
+
+.cta-actions {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.cta-actions a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.primary-button {
+    background: #2563eb;
+    color: white;
+}
+
+.primary-button:hover {
+    background: #004ac6;
+}
+
+.secondary-button {
+    background: #eff4ff;
+}
+
+.secondary-button:hover {
+    background: #e5eeff;
+}
+
+a:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 4px;
+}
+
+svg {
+    flex-shrink: 0;
+}
+
+@media(max-width: 1023px) {
+    .container {
+        padding-inline: 24px;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    app-recall-pulse {
+        max-width: 600px;
+        width: 100%;
+        justify-self: center;
+    }
+
+    .cta-card {
+        padding: 32px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cta-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media(max-width: 600px) {
+    .container {
+        padding-inline: 20px;
+    }
+
+    .hero {
+        padding-block: 32px 48px;
+    }
+
+    .hero-grid {
+        gap: 32px;
+    }
+
+    h1 {
+        font-size: 36px;
+        line-height: 44px;
+    }
+
+    .intro {
+        font-size: 16px;
+        line-height: 26px;
+    }
+
+    .feature-pills li {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .cta-section {
+        padding-block: 40px;
+    }
+
+    .cta-card {
+        padding: 24px;
+    }
+
+    .cta-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+}

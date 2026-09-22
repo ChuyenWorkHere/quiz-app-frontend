@@ -1,0 +1,25 @@
+@if (open()) { <button class="backdrop" type="button" aria-label="Close navigation" (click)="closeMenu.emit()"></button> }
+<aside [class.open]="open()">
+    <div>
+        <div class="brand-row">
+            <a routerLink="/admin/dashboard" class="brand"><svg lucideMessageSquareCheck [size]="30" aria-hidden="true"></svg><span>QuizFlow</span></a>
+            <button class="close" type="button" aria-label="Close navigation" (click)="closeMenu.emit()"><svg lucideX [size]="22"></svg></button>
+        </div>
+        <div class="nav-block">
+            <span class="eyebrow">Admin Studio</span>
+            <nav aria-label="Admin portal">
+                <a routerLink="/admin/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page"><svg lucideLayoutDashboard [size]="20"></svg>Dashboard</a>
+                <a routerLink="/admin/quizzes" routerLinkActive="active"><svg lucideFileText [size]="20"></svg>Quiz Management</a>
+                <a routerLink="/admin/questions" routerLinkActive="active"><svg lucideDatabase [size]="20"></svg>Question Bank</a>
+                <a routerLink="/admin/users" routerLinkActive="active"><svg lucideUsersRound [size]="20"></svg>User Management</a>
+            </nav>
+        </div>
+    </div>
+    <div class="system">
+        <span class="eyebrow">System</span>
+        <nav>
+            <button type="button"><svg lucideSettings [size]="20"></svg>Settings</button>
+            <button type="button"><svg lucideCircleHelp [size]="20"></svg>Help &amp; Docs</button>
+        </nav>
+    </div>
+</aside>

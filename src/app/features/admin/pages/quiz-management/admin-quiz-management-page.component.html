@@ -1,0 +1,110 @@
+<main>
+    @if (toastVisible()) {
+    <aside class="toast" role="status"><span class="toast-icon"><svg lucideCheck [size]="18"></svg></span><span><strong>{{ toastMessage() }}</strong></span><button type="button" aria-label="Close notification" (click)="toastVisible.set(false)"><svg lucideX [size]="18"></svg></button></aside>
+    }
+
+    <header class="page-heading">
+        <div>
+            <h1>Quiz Management</h1>
+            <p>Create, monitor, curate, and configure educational assessments and curriculum tests with live telemetry.</p>
+        </div>
+        <div class="heading-actions">
+            <button type="button" class="create" routerLink="/admin/quizzes/new"><svg lucidePlus [size]="20"></svg>Create Quiz</button>
+        </div>
+    </header>
+
+    <section class="filters">
+        <label class="search"><svg lucideSearch [size]="20"></svg><input type="search" placeholder="Search quizzes by title or description..." [ngModel]="searchTerm()" (ngModelChange)="changeSearch($event)"></label>
+        <div class="filter-actions">
+            <label>
+                <select [ngModel]="statusFilter()" (ngModelChange)="changeStatus($event)">
+                    <option value="all">Status: All</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <svg lucideChevronDown [size]="18"></svg>
+            </label>
+            <label>
+                <select [ngModel]="sortBy()" (ngModelChange)="changeSort($event)">
+                    <option value="recent">Sort: Last Updated</option>
+                    <option value="title">Sort: Title (A-Z)</option>
+                    <option value="questions">Sort: Question Count</option>
+                    <option value="duration">Sort: Duration</option>
+                </select>
+                <svg lucideSlidersHorizontal [size]="18"></svg>
+            </label>
+        </div>
+        @if (selectedIds().size) {
+        <div class="bulk"><strong><svg lucideCheck [size]="18"></svg>{{ selectedIds().size }} quizzes selected</strong>
+            <div><button type="button">Publish Active</button><button type="button" class="delete" (click)="openDelete('selected')">Delete Selected</button></div>
+        </div>}
+    </section>
+
+    @if (loading()) {
+    <section class="empty" role="status"><span><svg class="loading-spin" lucideRefreshCw [size]="40"></svg></span>
+        <h2>Loading quizzes...</h2>
+    </section>
+    } @else if (loadError()) {
+    <section class="empty" role="alert"><span><svg lucideAlertTriangle [size]="40"></svg></span>
+        <h2>Unable to load quizzes</h2>
+        <p>The admin quiz catalog could not be loaded.</p><button type="button" class="create" (click)="loadQuizzes()"><svg lucideRefreshCw [size]="18"></svg>Try Again</button></section>
+    } @else if (visibleQuizzes().length) {
+    <section class="quiz-table">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" aria-label="Select all quizzes" [checked]="allVisibleSelected()" (change)="toggleAll()"></th>
+                        <th>Quiz Title &amp; Curriculum</th>
+                        <th>Duration</th>
+                        <th>Questions</th>
+                        <th>Status</th>
+                        <th>Last Modified</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (quiz of visibleQuizzes(); track quiz.id; let even = $even) {
+                    <tr [class.alt]="even">
+                        <td><input type="checkbox" [attr.aria-label]="'Select ' + quiz.title" [checked]="selectedIds().has(quiz.id)" (change)="toggleQuiz(quiz.id)"></td>
+                        <td><span class="quiz-copy"><strong>{{ quiz.title }}</strong><small>{{ quiz.description }}</small></span></td>
+                        <td><span class="duration"><svg lucideTimer [size]="16"></svg>{{ quiz.duration }} mins</span></td>
+                        <td><span class="questions">{{ quiz.numberOfQuestions }} questions</span></td>
+                        <td><span class="status" [class.active]="quiz.isActive" [class.inactive]="!quiz.isActive"><i></i>{{ quiz.isActive ? 'Active' : 'Inactive' }}</span></td>
+                        <td>{{ quiz.updatedAt | date:'mediumDate' }}</td>
+                        <td>
+                            <div class="row-actions"><button type="button" title="View quiz" [routerLink]="['/admin/quizzes', quiz.id]"><svg lucideEye [size]="19"></svg></button><button type="button" title="Edit quiz" [routerLink]="['/admin/quizzes', quiz.id, 'edit']"><svg lucidePencil [size]="19"></svg></button>
+                                <button class="trash" type="button" title="Delete quiz" (click)="openDelete(quiz)"><svg lucideTrash2 [size]="19"></svg></button></div>
+                        </td>
+                    </tr>}
+                </tbody>
+            </table>
+        </div>
+        <footer>
+            <div>Showing <strong>{{ (page() - 1) * pageSize() + 1 }}</strong> to <strong>{{ (page() - 1) * pageSize() + quizzes().length }}</strong> of <strong>{{ totalItems() }}</strong> quizzes <label>Show <select [ngModel]="pageSize()" (ngModelChange)="changePageSize(+$event)"><option [value]="6">6</option><option [value]="12">12</option><option [value]="25">25</option></select> per page</label></div>
+            <nav aria-label="Pagination"><button type="button" [disabled]="page() <= 1" (click)="changePage(page() - 1)"><svg lucideChevronLeft [size]="18"></svg></button><button type="button" class="current">{{ page() }}</button>
+                <span>of {{ totalPages() }}</span><button type="button" [disabled]="page() >= totalPages()" (click)="changePage(page() + 1)"><svg lucideChevronRight [size]="18"></svg></button>
+            </nav>
+        </footer>
+    </section>
+    } @else {
+    <section class="empty"><span><svg lucideSearch [size]="40"></svg></span>
+        <h2>No quizzes found</h2>
+        <p>No assessments match your current search terms or selected filters. Reset parameters or create a new assessment from scratch.</p>
+        <div><button type="button" class="soft" (click)="clearFilters()">Clear All Filters</button><button type="button" class="create" routerLink="/admin/quizzes/new"><svg lucidePlus [size]="18"></svg>Create Quiz</button></div>
+    </section>
+    } @if (deleteTarget()) {
+    <div class="modal-backdrop" role="presentation" (click)="closeDelete()">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" (click)="$event.stopPropagation()">
+            <div class="modal-copy"><span class="warning"><svg lucideAlertTriangle [size]="27"></svg></span>
+                <div>
+                    <h2 id="delete-title">Delete Quiz Confirmation</h2>
+                    <p>Are you sure you want to delete <strong>“{{ deleteName() }}”</strong>? The quiz will be removed and its assigned questions will return to the Question Bank.</p>
+                </div>
+            </div>
+            <div class="notice"><svg lucideInfo [size]="18"></svg>A quiz with student attempts cannot be deleted.</div>
+            @if (deleteError()) { <div class="notice delete-error" role="alert"><svg lucideAlertTriangle [size]="18"></svg>{{ deleteError() }}</div> }
+            <div class="modal-actions"><button type="button" class="soft" [disabled]="deleting()" (click)="closeDelete()">Cancel</button><button type="button" class="confirm-delete" [disabled]="deleting()" (click)="confirmDelete()">{{ deleting() ? 'Deleting...' : 'Delete Quiz' }}</button></div>
+        </section>
+    </div>}
+</main>
